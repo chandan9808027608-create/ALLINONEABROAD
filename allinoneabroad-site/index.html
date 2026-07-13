@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="All In One Abroad — Trolley bags, cooking essentials & cozy bedding for Indian students and professionals going abroad."/>
+  <title>ALL IN ONE ABROAD — Luggage, Kitchen & Bedding</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar">
+  <div class="announce-track">
+    <span>🎉 Grand Opening — Up to 50% Off Storewide</span>
+    <span>🚚 Free Delivery on Orders Above Rs. 799</span>
+    <span>✈️ Everything you need before your flight — one store</span>
+    <span>💳 Pay with eSewa, Khalti, FonePay or COD</span>
+    <span>🎉 Grand Opening — Up to 50% Off Storewide</span>
+    <span>🚚 Free Delivery on Orders Above Rs. 799</span>
+    <span>✈️ Everything you need before your flight — one store</span>
+    <span>💳 Pay with eSewa, Khalti, FonePay or COD</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1 class="hero-title">Going abroad? We<br>pack it <em>all</em> for you.</h1>
+      <p class="hero-sub">Trolley bags, cooking essentials &amp; cozy bedding —<br>everything you need before flying out.</p>
+      <a href="shop.html" class="btn-orange">SHOP NOW</a>
+    </div>
+    <div class="hero-right">
+      <a href="shop.html?cat=kitchen" class="hero-card">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=120&q=80" alt="Kitchen"/>
+        <div class="hero-card-body">
+          <div class="hero-card-title">Kitchen Essentials</div>
+          <div class="hero-card-sub">Cookers &amp; Utensils</div>
+          <span class="hero-card-link">VIEW ALL ›</span>
+        </div>
+      </a>
+      <a href="shop.html?cat=bedding" class="hero-card">
+        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=120&q=80" alt="Bedding"/>
+        <div class="hero-card-body">
+          <div class="hero-card-title">Bedding &amp; Comfort</div>
+          <div class="hero-card-sub">Pillows &amp; Blankets</div>
+          <span class="hero-card-link">VIEW ALL ›</span>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="hero-announce">
+    <span>Grand Opening — Up to 50% Off Storewide</span>
+    <span class="sep">|</span>
+    <span>Free Delivery on Orders Above Rs. 799</span>
+  </div>
+</section>
+
+<!-- HEADER -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-top">ALL IN ONE</span>
+      <span class="logo-bottom">ABROAD</span>
+    </a>
+    <form class="search-form" onsubmit="return false;">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search luggage, cookers, blankets…" id="searchInput"/>
+    </form>
+    <nav class="main-nav">
+      <a href="shop.html?cat=luggage">Luggage</a>
+      <a href="shop.html?cat=kitchen">Kitchen</a>
+      <a href="shop.html?cat=bedding">Bedding</a>
+      <a href="shop.html">All Products</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" title="Wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      <button class="icon-btn cart-btn" onclick="toggleCart()" title="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <a href="login.html" class="btn-signin">Sign In</a>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" id="mobileMenuBtn">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="shop.html?cat=luggage">Luggage</a>
+    <a href="shop.html?cat=kitchen">Kitchen</a>
+    <a href="shop.html?cat=bedding">Bedding</a>
+    <a href="shop.html">All Products</a>
+    <a href="login.html">Sign In</a>
+  </div>
+</header>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div><div class="trust-title">Free Delivery</div><div class="trust-sub">On orders above Rs. 799</div></div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div><div class="trust-title">100% Genuine</div><div class="trust-sub">Quality guaranteed</div></div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+      </div>
+      <div><div class="trust-title">Easy Returns</div><div class="trust-sub">7-day hassle-free</div></div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div><div class="trust-title">Fast Dispatch</div><div class="trust-sub">Ships in 24 hours</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title center">Everything you need, in three collections</h2>
+    <div class="cat-grid">
+      <a href="shop.html?cat=luggage" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80" alt="Luggage"/>
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <div class="cat-sub">Trolleys, Backpacks, Sets</div>
+          <div class="cat-name">Luggage &amp; Bags</div>
+          <span class="cat-btn">EXPLORE</span>
+        </div>
+      </a>
+      <a href="shop.html?cat=kitchen" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Kitchen"/>
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <div class="cat-sub">Cookers, Utensils, Tiffins</div>
+          <div class="cat-name">Kitchen Essentials</div>
+          <span class="cat-btn">EXPLORE</span>
+        </div>
+      </a>
+      <a href="shop.html?cat=bedding" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&q=80" alt="Bedding"/>
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <div class="cat-sub">Blankets, Pillows, Sheets</div>
+          <div class="cat-name">Bedding &amp; Comfort</div>
+          <span class="cat-btn">EXPLORE</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BEST SELLERS -->
+<section class="section section-gray">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Best Sellers</h2>
+      <a href="shop.html" class="view-all-link">VIEW ALL BEST SELLERS ›</a>
+    </div>
+    <div class="prod-grid" id="bestSellerGrid"></div>
+  </div>
+</section>
+
+<!-- DEAL OF THE DAY -->
+<section class="deal-section">
+  <div class="container">
+    <div class="deal-inner">
+      <div class="deal-content">
+        <div class="deal-label">DEAL OF THE DAY</div>
+        <h2 class="deal-title">Hardside Luggage Set — 3 Pcs</h2>
+        <div class="deal-prices">
+          <span class="deal-price">Rs. 5,499</span>
+          <span class="deal-original">Rs.10,999</span>
+        </div>
+        <div class="deal-saving">You save Rs. 5,500 (50% off)</div>
+        <button class="btn-orange" onclick="addToCart({name:'Hardside Luggage Set — 3 Pcs',price:5499,cat:'luggage',img:'https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=200&q=80'})">GRAB THIS DEAL</button>
+      </div>
+      <div class="deal-img-wrap">
+        <img src="https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=500&q=80" alt="Luggage Set"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMBO SAVER -->
+<section class="combo-section">
+  <div class="container">
+    <div class="combo-inner">
+      <div class="combo-left">
+        <h2 class="combo-title">Combo Saver</h2>
+        <p class="combo-sub">Buy Luggage + Kitchen + Bedding — get 10% extra off your entire order.</p>
+      </div>
+      <div class="combo-right">
+        <div class="combo-code">ABROAD3X</div>
+        <a href="shop.html" class="btn-orange">SHOP THE COMBO</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORLDWIDE -->
+<section class="section world-section">
+  <div class="container">
+    <h2 class="section-title center">Our customers fly to</h2>
+    <div class="world-pills">
+      <span class="pill">🇬🇧 UK</span>
+      <span class="pill">🇨🇦 Canada</span>
+      <span class="pill">🇺🇸 USA</span>
+      <span class="pill">🇦🇺 Australia</span>
+      <span class="pill">🇩🇪 Germany</span>
+      <span class="pill">🇫🇷 France</span>
+      <span class="pill">🇮🇪 Ireland</span>
+      <span class="pill">🇸🇬 Singapore</span>
+      <span class="pill">🇳🇱 Netherlands</span>
+      <span class="pill">🇳🇿 NZ</span>
+      <span class="pill">🇸🇪 Sweden</span>
+      <span class="pill">🇩🇰 Denmark</span>
+      <span class="pill pill-more">+ 38 more</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section why-section">
+  <div class="container">
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3 class="why-title">Curated for Abroad</h3>
+        <p class="why-text">Every product is chosen for the real needs of people moving overseas.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3 class="why-title">Flight-Ready Packaging</h3>
+        <p class="why-text">Products packed securely so they survive the journey.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.9a16 16 0 0 0 6.19 6.19l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>
+        </div>
+        <h3 class="why-title">Real Human Support</h3>
+        <p class="why-text">Call, WhatsApp or email us. Our team is available 7 days a week.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="footer-logo-top">ALL IN ONE</span>
+          <span class="footer-logo-bottom">ABROAD</span>
+        </div>
+        <p class="footer-desc">Your trusted companion for student travel essentials. We bridge the gap between home and your new destination.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" title="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+          <a href="#" title="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li><li><a href="shop.html?cat=bedding">Bedding</a></li></ul></div>
+      <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
+      <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 All In One Abroad. All rights reserved.</p>
+      <div class="payment-icons">
+        <span class="pay-badge">eSewa</span>
+        <span class="pay-badge">Khalti</span>
+        <span class="pay-badge">FonePay</span>
+        <span class="pay-badge">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeAllDrawers()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Shopping Cart <span id="cartLabel" class="cart-label">0</span></h3>
+    <button class="drawer-close" onclick="toggleCart()">×</button>
+  </div>
+  <div class="drawer-body" id="cartBody">
+    <div class="empty-state" id="cartEmpty">
+      <div class="empty-icon">🛒</div>
+      <p>Your cart is empty</p>
+      <a href="shop.html" class="btn-orange" style="display:inline-block;margin-top:12px;">Start Shopping</a>
+    </div>
+    <div id="cartItemsList"></div>
+  </div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div>
+    <div class="cart-note">🎉 Free delivery on this order!</div>
+    <a href="checkout.html" class="btn-orange btn-full">Proceed to Checkout →</a>
+    <button class="btn-outline btn-full" onclick="toggleCart()" style="margin-top:10px;">Continue Shopping</button>
+  </div>
+</aside>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="main.js"></script>
+</body>
+</html>
