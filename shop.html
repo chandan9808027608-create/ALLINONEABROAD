@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — ALL IN ONE ABROAD</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="announce-bar"><div class="announce-track"><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Free Delivery on Orders Above Rs. 799</span><span>💳 eSewa • Khalti • FonePay • COD</span><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Free Delivery on Orders Above Rs. 799</span><span>💳 eSewa • Khalti • FonePay • COD</span></div></div>
+
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></a>
+    <form class="search-form" onsubmit="return false;">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search luggage, cookers, blankets…" id="searchInput"/>
+    </form>
+    <nav class="main-nav">
+      <a href="shop.html?cat=luggage" data-cat="luggage">Luggage</a>
+      <a href="shop.html?cat=kitchen" data-cat="kitchen">Kitchen</a>
+      <a href="shop.html?cat=bedding" data-cat="bedding">Bedding</a>
+      <a href="shop.html" data-cat="all">All Products</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" title="Wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+      <button class="icon-btn cart-btn" onclick="toggleCart()" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="cart-count" id="cartCount">0</span></button>
+      <a href="login.html" class="btn-signin">Sign In</a>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="shop.html?cat=luggage">Luggage</a><a href="shop.html?cat=kitchen">Kitchen</a>
+    <a href="shop.html?cat=bedding">Bedding</a><a href="shop.html">All Products</a><a href="login.html">Sign In</a>
+  </div>
+</header>
+
+<div class="shop-hero">
+  <div class="container">
+    <h1 id="shopTitle">All Products</h1>
+    <p id="shopDesc">Everything you need — luggage, kitchen, and bedding.</p>
+  </div>
+</div>
+
+<div class="shop-layout">
+  <aside class="shop-sidebar">
+    <div class="filter-box">
+      <div class="filter-title">Categories</div>
+      <label class="filter-opt"><input type="radio" name="cat" value="all" onchange="location.href='shop.html?cat=all'"> <span>All Products</span></label>
+      <label class="filter-opt"><input type="radio" name="cat" value="luggage" onchange="location.href='shop.html?cat=luggage'"> <span>Luggage &amp; Bags</span></label>
+      <label class="filter-opt"><input type="radio" name="cat" value="kitchen" onchange="location.href='shop.html?cat=kitchen'"> <span>Kitchen Essentials</span></label>
+      <label class="filter-opt"><input type="radio" name="cat" value="bedding" onchange="location.href='shop.html?cat=bedding'"> <span>Bedding &amp; Comfort</span></label>
+    </div>
+    <div class="filter-box">
+      <div class="filter-title">Price Range</div>
+      <label class="filter-opt"><input type="checkbox"> <span>Under Rs. 500</span></label>
+      <label class="filter-opt"><input type="checkbox"> <span>Rs. 500 – 1,500</span></label>
+      <label class="filter-opt"><input type="checkbox"> <span>Rs. 1,500 – 5,000</span></label>
+      <label class="filter-opt"><input type="checkbox"> <span>Above Rs. 5,000</span></label>
+    </div>
+    <div class="filter-box">
+      <div class="filter-title">Discount</div>
+      <label class="filter-opt"><input type="checkbox"> <span>40% or more</span></label>
+      <label class="filter-opt"><input type="checkbox"> <span>50% or more</span></label>
+    </div>
+  </aside>
+  <div class="shop-main">
+    <div class="sort-bar">
+      <span id="prodCount" style="font-size:13px;color:var(--gray);"></span>
+      <select id="sortSelect" onchange="renderShop()">
+        <option value="featured">Featured</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="rated">Top Rated</option>
+      </select>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo"><span class="footer-logo-top">ALL IN ONE</span><span class="footer-logo-bottom">ABROAD</span></div>
+        <p class="footer-desc">Your trusted companion for student travel essentials.</p>
+        <div class="footer-social">
+          <a href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li><li><a href="shop.html?cat=bedding">Bedding</a></li></ul></div>
+      <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
+      <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">© 2026 All In One Abroad. All rights reserved.</p><div class="payment-icons"><span class="pay-badge">eSewa</span><span class="pay-badge">Khalti</span><span class="pay-badge">FonePay</span><span class="pay-badge">COD</span></div></div>
+  </div>
+</footer>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeAllDrawers()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head"><h3>Shopping Cart <span id="cartLabel" class="cart-label">0</span></h3><button class="drawer-close" onclick="toggleCart()">×</button></div>
+  <div class="drawer-body" id="cartBody"><div class="empty-state" id="cartEmpty"><div class="empty-icon">🛒</div><p>Your cart is empty</p></div><div id="cartItemsList"></div></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;"><div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div><div class="cart-note">🎉 Free delivery on this order!</div><a href="checkout.html" class="btn-orange btn-full">Proceed to Checkout →</a><button class="btn-outline btn-full" onclick="toggleCart()" style="margin-top:10px;">Continue Shopping</button></div>
+</aside>
+<div class="toast" id="toast"></div>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+  // Set active category radio on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const cat = new URLSearchParams(location.search).get('cat') || 'all';
+    const radio = document.querySelector(`input[value="${cat}"]`);
+    if (radio) radio.checked = true;
+  });
+</script>
+<script src="main.js"></script>
+</body>
+</html>
