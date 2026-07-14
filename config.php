@@ -2,6 +2,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}
+
 $dbHost = getenv('DB_HOST') ?: 'localhost';
 $dbName = getenv('DB_NAME') ?: 'allinoneabroad';
 $dbUser = getenv('DB_USER') ?: 'root';

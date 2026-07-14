@@ -1,0 +1,10 @@
+<?php
+// Copy this file to config.local.php and fill in your real Hostinger credentials.
+// config.local.php is git-ignored — it will never be committed or pushed to GitHub.
+// Upload config.local.php to your Hostinger public_html folder manually (FTP / File Manager),
+// separately from your git push.
+
+putenv('DB_HOST=localhost');
+putenv('DB_NAME=uXXXXXXXXX_yourdbname');
+putenv('DB_USER=uXXXXXXXXX_yourusername');
+putenv('DB_PASS=your-password-here');
