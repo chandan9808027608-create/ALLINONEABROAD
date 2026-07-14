@@ -13,6 +13,9 @@ try {
     if (empty($input)) {
         $input = $_POST;
     }
+    if (empty($input)) {
+        $input = $_GET;
+    }
 
     if (!is_array($input)) {
         throw new RuntimeException('Invalid request body.');
