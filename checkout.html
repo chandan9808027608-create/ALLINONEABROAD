@@ -78,10 +78,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const t = document.getElementById('checkoutTotal');
   if (t) t.textContent = 'Rs. ' + total.toLocaleString('en-IN');
 });
-function placeOrder() {
-  localStorage.removeItem('aiaCart');
-  window.location.href = 'index.html?order=success';
-  alert('Order placed successfully! Thank you for shopping with All In One Abroad. 🎉');
+
+async function placeOrder() {
+  const cart = JSON.parse(localStorage.getItem('aiaCart') || '[]');
+  if (!cart.length) {
+    alert('Your cart is empty.');
+    return;
+  }
+
+  const payload = {
+    action: 'order',
+    name: document.querySelector('input[placeholder="Rahul"]').value.trim() + ' ' + document.querySelector('input[placeholder="Sharma"]').value.trim(),
+    email: document.querySelector('input[placeholder="rahul@email.com"]').value.trim(),
+    phone: document.querySelector('input[placeholder="+91 98XXX XXXXX"]').value.trim(),
+    address: document.querySelector('input[placeholder="Street, Colony"]').value.trim(),
+    city: document.querySelector('input[placeholder="Delhi"]').value.trim(),
+    state: document.querySelector('select').value,
+    pincode: document.querySelector('input[placeholder="110001"]').value.trim(),
+    paymentMethod: document.querySelector('input[name="pay"]:checked')?.parentElement?.textContent?.trim() || 'COD',
+    items: cart,
+    total: cart.reduce((s,i) => s + i.price*i.qty, 0)
+  };
+
+  try {
+    const res = await fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.removeItem('aiaCart');
+      alert(`Order placed successfully! Your order ID is #${data.orderId}.`);
+      window.location.href = 'index.html?order=success';
+    } else {
+      alert(data.message || 'Order could not be placed.');
+    }
+  } catch (err) {
+    alert('Could not connect to the backend.');
+  }
 }
 </script>
 </body>

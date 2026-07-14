@@ -1,0 +1,125 @@
+<?php
+require_once __DIR__ . '/config.php';
+
+header('Content-Type: application/json; charset=utf-8');
+
+function sendJson(array $payload): void
+{
+    echo json_encode($payload, JSON_UNESCAPED_SLASHES);
+}
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (empty($input)) {
+        $input = $_POST;
+    }
+
+    if (!is_array($input)) {
+        throw new RuntimeException('Invalid request body.');
+    }
+
+    $action = $input['action'] ?? '';
+
+    if ($action === 'health') {
+        sendJson(['success' => true, 'message' => 'Backend is reachable.']);
+        exit;
+    }
+
+    $conn = connectDb();
+
+    if ($action === 'register') {
+        $name = trim((string)($input['name'] ?? ''));
+        $email = trim(strtolower((string)($input['email'] ?? '')));
+        $password = (string)($input['password'] ?? '');
+
+        if ($name === '' || $email === '' || $password === '') {
+            throw new RuntimeException('Name, email, and password are required.');
+        }
+
+        $stmt = $conn->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            throw new RuntimeException('An account with this email already exists.');
+        }
+        $stmt->close();
+
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
+        $stmt->bind_param('sss', $name, $email, $hashed);
+        if (!$stmt->execute()) {
+            throw new RuntimeException('Unable to create account.');
+        }
+
+        sendJson([
+            'success' => true,
+            'message' => 'Account created successfully.',
+            'user' => ['id' => $stmt->insert_id, 'name' => $name, 'email' => $email]
+        ]);
+        exit;
+    }
+
+    if ($action === 'login') {
+        $email = trim(strtolower((string)($input['email'] ?? '')));
+        $password = (string)($input['password'] ?? '');
+
+        if ($email === '' || $password === '') {
+            throw new RuntimeException('Email and password are required.');
+        }
+
+        $stmt = $conn->prepare('SELECT id, name, email, password_hash FROM users WHERE email = ? LIMIT 1');
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+
+        if (!$user || !password_verify($password, $user['password_hash'])) {
+            throw new RuntimeException('Invalid email or password.');
+        }
+
+        sendJson([
+            'success' => true,
+            'message' => 'Login successful.',
+            'user' => ['id' => (int)$user['id'], 'name' => $user['name'], 'email' => $user['email']]
+        ]);
+        exit;
+    }
+
+    if ($action === 'order') {
+        $name = trim((string)($input['name'] ?? ''));
+        $email = trim(strtolower((string)($input['email'] ?? '')));
+        $phone = trim((string)($input['phone'] ?? ''));
+        $address = trim((string)($input['address'] ?? ''));
+        $city = trim((string)($input['city'] ?? ''));
+        $state = trim((string)($input['state'] ?? ''));
+        $pincode = trim((string)($input['pincode'] ?? ''));
+        $paymentMethod = trim((string)($input['paymentMethod'] ?? ''));
+        $items = $input['items'] ?? [];
+        $total = (float)($input['total'] ?? 0);
+
+        if ($name === '' || $email === '' || $phone === '' || $address === '' || $city === '' || $state === '' || $pincode === '' || $paymentMethod === '') {
+            throw new RuntimeException('Please complete all shipping and payment details.');
+        }
+
+        $itemsJson = json_encode($items, JSON_UNESCAPED_SLASHES);
+        $stmt = $conn->prepare('INSERT INTO orders (customer_name, email, phone, shipping_address, city, state, pincode, payment_method, items, total_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bind_param('sssssssssd', $name, $email, $phone, $address, $city, $state, $pincode, $paymentMethod, $itemsJson, $total);
+        if (!$stmt->execute()) {
+            throw new RuntimeException('Unable to place order.');
+        }
+
+        sendJson([
+            'success' => true,
+            'message' => 'Order placed successfully.',
+            'orderId' => $stmt->insert_id
+        ]);
+        exit;
+    }
+
+    throw new RuntimeException('Unsupported action.');
+} catch (Throwable $e) {
+    http_response_code(400);
+    sendJson(['success' => false, 'message' => $e->getMessage()]);
+}

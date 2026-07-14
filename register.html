@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In — ALL IN ONE ABROAD</title>
+  <title>Create Account — ALL IN ONE ABROAD</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
@@ -18,38 +18,34 @@
     .form-group label { font-size: 12px; font-weight: 600; color: var(--dark); display: block; margin-bottom: 6px; }
     .form-group input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
     .form-group input:focus { border-color: var(--orange); }
-    .auth-forgot { text-align: right; font-size: 12px; color: var(--orange); margin-top: -8px; margin-bottom: 20px; }
-    .auth-divider { text-align: center; font-size: 12px; color: var(--lgray); margin: 18px 0; position: relative; }
-    .auth-divider::before, .auth-divider::after { content:''; position:absolute; top:50%; width:40%; height:1px; background:var(--border); }
-    .auth-divider::before { left:0; } .auth-divider::after { right:0; }
     .auth-switch { text-align: center; font-size: 13px; color: var(--gray); margin-top: 20px; }
     .auth-switch a { color: var(--orange); font-weight: 600; }
   </style>
 </head>
 <body>
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
-    <h1 class="auth-title">Welcome back</h1>
-    <p class="auth-sub">Sign in to track orders &amp; manage your account</p>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group"><label>Email address</label><input type="email" placeholder="you@email.com" required id="loginEmail"/></div>
-      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" required id="loginPass"/></div>
-      <div class="auth-forgot"><a href="#">Forgot password?</a></div>
-      <button type="submit" class="btn-orange btn-full">Sign In</button>
-    </form>
-    <div class="auth-divider">or</div>
-    <div class="auth-switch">Don't have an account? <a href="register.html">Create one free</a></div>
-    <div style="margin-top:20px;text-align:center;"><a href="index.html" style="font-size:13px;color:var(--gray);">← Back to store</a></div>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Sign up to place orders and track your purchases</p>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group"><label>Full name</label><input type="text" id="regName" required placeholder="Rahul Sharma"/></div>
+        <div class="form-group"><label>Email address</label><input type="email" id="regEmail" required placeholder="you@email.com"/></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPass" required placeholder="••••••••"/></div>
+        <button type="submit" class="btn-orange btn-full">Create Account</button>
+      </form>
+      <div class="auth-switch">Already have an account? <a href="login.html">Sign in</a></div>
+      <div style="margin-top:20px;text-align:center;"><a href="index.html" style="font-size:13px;color:var(--gray);">← Back to store</a></div>
+    </div>
   </div>
-</div>
 <script>
-async function handleLogin(e) {
+async function handleRegister(e) {
   e.preventDefault();
   const payload = {
-    action: 'login',
-    email: document.getElementById('loginEmail').value.trim(),
-    password: document.getElementById('loginPass').value
+    action: 'register',
+    name: document.getElementById('regName').value.trim(),
+    email: document.getElementById('regEmail').value.trim(),
+    password: document.getElementById('regPass').value
   };
 
   try {
@@ -60,10 +56,10 @@ async function handleLogin(e) {
     });
     const data = await res.json();
     if (data.success) {
-      alert(`Welcome back, ${data.user.name}!`);
-      window.location.href = 'index.html';
+      alert('Account created successfully. Please sign in.');
+      window.location.href = 'login.html';
     } else {
-      alert(data.message || 'Login failed.');
+      alert(data.message || 'Registration failed.');
     }
   } catch (err) {
     alert('Could not connect to the backend.');
