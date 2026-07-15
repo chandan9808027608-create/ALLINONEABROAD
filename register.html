@@ -31,7 +31,7 @@
       <form onsubmit="handleRegister(event)">
         <div class="form-group"><label>Full name</label><input type="text" id="regName" required placeholder="Rahul Sharma"/></div>
         <div class="form-group"><label>Email address</label><input type="email" id="regEmail" required placeholder="you@email.com"/></div>
-        <div class="form-group"><label>Password</label><input type="password" id="regPass" required placeholder="••••••••"/></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPass" required minlength="8" placeholder="At least 8 characters"/></div>
         <button type="submit" class="btn-orange btn-full">Create Account</button>
       </form>
       <div class="auth-switch">Already have an account? <a href="login.html">Sign in</a></div>
