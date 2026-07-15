@@ -144,30 +144,33 @@ function toggleWish(id) {
 // ─── RENDER PRODUCT CARD ─────────────────────
 function renderProductCard(p) {
   const inWish = wishlist.includes(p.id);
+  const off = p.orig && p.orig > p.price ? Math.round((p.orig - p.price) / p.orig * 100) : 0;
+  const outOfStock = (p.stock ?? 0) <= 0;
+  const stars = p.stars ?? 5;
   return `
   <div class="prod-card">
     <div class="prod-img-wrap">
       <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
       <div class="prod-badges">
-        <span class="badge badge-off">${p.off}% OFF</span>
-        <span class="badge ${p.badgeClass}">${p.badge}</span>
-        ${p.extra ? `<span class="badge ${p.extra}">${p.extraLabel}</span>` : ''}
+        ${off > 0 ? `<span class="badge badge-off">${off}% OFF</span>` : ''}
+        ${p.badge ? `<span class="badge badge-tag">${p.badge}</span>` : ''}
+        ${outOfStock ? `<span class="badge" style="background:#6b7280;color:#fff;">OUT OF STOCK</span>` : ''}
       </div>
       <button class="wish-btn ${inWish ? 'active' : ''}" data-wish="${p.id}" onclick="toggleWish(${p.id})" title="Wishlist">${inWish ? '♥' : '♡'}</button>
     </div>
     <div class="prod-body">
       <div class="prod-cat">${p.cat.toUpperCase()}</div>
       <div class="prod-name">${p.name}</div>
-      <div class="prod-sub">${p.sub}</div>
+      <div class="prod-sub">${p.sub || ''}</div>
       <div class="prod-rating">
-        <span class="stars">${'★'.repeat(p.stars)}${'☆'.repeat(5 - p.stars)}</span>
-        <span class="review-ct">(${p.reviews.toLocaleString('en-IN')})</span>
+        <span class="stars">${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</span>
+        <span class="review-ct">(${(p.reviews ?? 0).toLocaleString('en-IN')})</span>
       </div>
       <div class="prod-price-row">
         <span class="prod-price">Rs. ${p.price.toLocaleString('en-IN')}</span>
-        <span class="prod-orig">Rs. ${p.orig.toLocaleString('en-IN')}</span>
+        ${off > 0 ? `<span class="prod-orig">Rs. ${p.orig.toLocaleString('en-IN')}</span>` : ''}
       </div>
-      <button class="add-cart-btn" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g,"\\'")}', price:${p.price}, img:'${p.img}', cat:'${p.cat}'})">ADD TO CART</button>
+      <button class="add-cart-btn" ${outOfStock ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : `onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g,"\\'")}', price:${p.price}, img:'${p.img}', cat:'${p.cat}'})"`}>${outOfStock ? 'OUT OF STOCK' : 'ADD TO CART'}</button>
     </div>
   </div>`;
 }
@@ -176,21 +179,25 @@ function renderProductCard(p) {
 function renderBestSellers() {
   const grid = document.getElementById('bestSellerGrid');
   if (!grid) return;
-  const top4 = PRODUCTS.filter(p => [1,2,3,4].includes(p.id));
-  grid.innerHTML = top4.map(renderProductCard).join('');
+  if (productsLoadError) { grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);">Unable to load products right now.</div>'; return; }
+  const top4 = [...PRODUCTS].sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0)).slice(0, 4);
+  grid.innerHTML = top4.map(renderProductCard).join('') || '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);">No products yet.</div>';
 }
 
 // ─── SHOP PAGE ───────────────────────────────
 function renderShop() {
   const grid = document.getElementById('shopGrid');
   if (!grid) return;
+  if (productsLoadError) { grid.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);">Unable to load products right now. Please try again later.</div>'; return; }
   const params = new URLSearchParams(window.location.search);
   const cat = params.get('cat') || 'all';
+  const q = (params.get('q') || '').trim().toLowerCase();
   const sort = document.getElementById('sortSelect')?.value || 'featured';
   let prods = cat === 'all' ? [...PRODUCTS] : PRODUCTS.filter(p => p.cat === cat);
+  if (q) prods = prods.filter(p => p.name.toLowerCase().includes(q) || (p.sub || '').toLowerCase().includes(q));
   if (sort === 'low') prods.sort((a, b) => a.price - b.price);
   else if (sort === 'high') prods.sort((a, b) => b.price - a.price);
-  else if (sort === 'rated') prods.sort((a, b) => b.reviews - a.reviews);
+  else if (sort === 'rated') prods.sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0));
   const titleEl = document.getElementById('shopTitle');
   const descEl = document.getElementById('shopDesc');
   const countEl = document.getElementById('prodCount');
@@ -200,10 +207,10 @@ function renderShop() {
     bedding: { t: 'Bedding & Comfort', d: 'Warm blankets, memory foam pillows and quick-dry towel sets.' },
     all:     { t: 'All Products', d: 'Everything you need — luggage, kitchen, and bedding.' },
   };
-  if (titleEl) titleEl.textContent = catMap[cat]?.t || 'All Products';
+  if (titleEl) titleEl.textContent = q ? `Search results for "${q}"` : (catMap[cat]?.t || 'All Products');
   if (descEl) descEl.textContent = catMap[cat]?.d || '';
   if (countEl) countEl.textContent = `${prods.length} products`;
-  grid.innerHTML = prods.map(renderProductCard).join('');
+  grid.innerHTML = prods.map(renderProductCard).join('') || '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);">No products found.</div>';
 
   // Active filter highlight
   document.querySelectorAll('[data-cat]').forEach(btn => {
