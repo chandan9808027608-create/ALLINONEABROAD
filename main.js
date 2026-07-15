@@ -2,6 +2,15 @@
    ALL IN ONE ABROAD — main.js
    ============================================= */
 
+// ─── IMAGE FALLBACK ──────────────────────────
+const FALLBACK_IMG = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" font-family="Arial, sans-serif" font-size="16" fill="#9ca3af" text-anchor="middle" dominant-baseline="middle">Image unavailable</text></svg>'
+);
+function handleImgError(img) {
+  img.onerror = null;
+  img.src = FALLBACK_IMG;
+}
+
 // ─── PRODUCT DATA ───────────────────────────
 const PRODUCTS = [
   { id:1, name:'Hardside Spinner Trolley 28"', cat:'luggage', price:2799, orig:4999, off:44, img:'https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=400&q=80', sub:'TSA Lock • 360° Wheels', badge:'CHECK-IN BAG', badgeClass:'badge-tag', extra:'badge-green', extraLabel:'Best Seller', reviews:3, stars:4 },
@@ -89,7 +98,7 @@ function renderCartItems() {
   if (footer) footer.style.display = 'block';
   list.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <img src="${item.img}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/64'"/>
+      <img src="${item.img}" alt="${item.name}" onerror="handleImgError(this)"/>
       <div class="ci-info">
         <div class="ci-name">${item.name}</div>
         <div class="ci-price">Rs. ${item.price.toLocaleString('en-IN')}</div>
@@ -153,7 +162,7 @@ function renderProductCard(p) {
   return `
   <div class="prod-card">
     <div class="prod-img-wrap">
-      <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+      <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
       <div class="prod-badges">
         <span class="badge badge-off">${p.off}% OFF</span>
         <span class="badge ${p.badgeClass}">${p.badge}</span>
@@ -245,4 +254,40 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
   renderBestSellers();
   renderShop();
+  checkAuthState();
 });
+
+// ─── AUTH STATE (header sign-in / account) ───
+async function checkAuthState() {
+  const signInLinks = document.querySelectorAll('.btn-signin');
+  if (!signInLinks.length) return;
+  try {
+    const res = await fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'me' })
+    });
+    const data = await res.json();
+    if (data.success && data.user) {
+      signInLinks.forEach(el => {
+        el.textContent = `Hi, ${data.user.name.split(' ')[0]}`;
+        el.href = '#';
+        el.title = 'Click to log out';
+        el.onclick = (e) => { e.preventDefault(); handleLogout(); };
+      });
+    }
+  } catch (err) {
+    // Backend unreachable — leave header as "Sign In"
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'logout' })
+    });
+  } catch (err) {}
+  window.location.href = 'index.html';
+}
