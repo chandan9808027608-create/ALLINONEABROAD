@@ -8,3 +8,7 @@ putenv('DB_HOST=localhost');
 putenv('DB_NAME=uXXXXXXXXX_yourdbname');
 putenv('DB_USER=uXXXXXXXXX_yourusername');
 putenv('DB_PASS=your-password-here');
+
+// Protects orders.php (customer PII) behind a login form. Pick a long,
+// random passphrase — this page is publicly reachable if unset/guessed.
+putenv('ADMIN_PASSWORD=choose-a-long-random-passphrase');
