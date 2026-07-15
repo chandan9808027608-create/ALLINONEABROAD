@@ -13,16 +13,23 @@ function renderLoginForm(?string $error = null): void
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <title>Admin Login — ALL IN ONE ABROAD</title>
       <style>
-        body { font-family: Inter, Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f9fafb; }
-        form { background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.1); width: 100%; max-width: 320px; }
-        h1 { font-size: 18px; margin: 0 0 16px; }
-        input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
-        button { width: 100%; padding: 10px; border: none; border-radius: 8px; background: #f97316; color: #fff; font-weight: 700; cursor: pointer; }
-        .error { color: #dc2626; font-size: 13px; margin-bottom: 12px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f3f4f6; }
+        .card { background: #fff; padding: 40px 36px; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.1); width: 100%; max-width: 340px; }
+        .logo { text-align: center; margin-bottom: 24px; line-height: 1; }
+        .logo-top { display: block; font-size: 10px; font-weight: 800; letter-spacing: 0.18em; color: #6b7280; text-transform: uppercase; }
+        .logo-bottom { display: block; font-size: 22px; font-weight: 900; letter-spacing: 0.04em; color: #f97316; margin-top: 4px; }
+        h1 { font-size: 15px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 22px; }
+        input { width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; margin-bottom: 14px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
+        input:focus { border-color: #f97316; }
+        button { width: 100%; padding: 11px; border: none; border-radius: 8px; background: #f97316; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: background 0.15s; }
+        button:hover { background: #ea6c0a; }
+        .error { background: #fef2f2; color: #dc2626; font-size: 12.5px; font-weight: 600; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; }
       </style>
     </head>
     <body>
-      <form method="post">
+      <form class="card" method="post">
+        <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
         <h1>Orders Dashboard Login</h1>
         <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
         <input type="password" name="password" placeholder="Admin password" autofocus required/>
@@ -68,6 +75,26 @@ try {
     echo '<h1>Database unavailable</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>';
     exit;
 }
+
+$orders = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
+    }
+}
+
+$totalOrders = count($orders);
+$totalRevenue = array_sum(array_column($orders, 'total_amount'));
+$avgOrder = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
+$today = date('Y-m-d');
+$todaysOrders = count(array_filter($orders, fn($o) => substr((string)$o['created_at'], 0, 10) === $today));
+
+$paymentBadgeColors = [
+    'eSewa' => '#16a34a',
+    'Khalti' => '#7c3aed',
+    'FonePay' => '#2563eb',
+    'Cash on Delivery (COD)' => '#6b7280',
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,47 +103,144 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Orders Dashboard — ALL IN ONE ABROAD</title>
   <style>
-    body { font-family: Inter, Arial, sans-serif; margin: 24px; color: #111827; }
-    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    th, td { border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; font-size: 13px; }
-    th { background: #f9fafb; }
-    .empty { color: #6b7280; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #111827; background: #f3f4f6; }
+
+    .topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 16px 28px; display: flex; align-items: center; gap: 16px; }
+    .logo { line-height: 1; }
+    .logo-top { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.18em; color: #6b7280; text-transform: uppercase; }
+    .logo-bottom { display: block; font-size: 17px; font-weight: 900; letter-spacing: 0.04em; color: #f97316; margin-top: 2px; }
+    .topbar-title { font-size: 14px; font-weight: 600; color: #6b7280; padding-left: 16px; border-left: 1px solid #e5e7eb; }
+    .logout-link { margin-left: auto; font-size: 13px; font-weight: 600; color: #6b7280; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; transition: background 0.15s; text-decoration: none; }
+    .logout-link:hover { background: #f3f4f6; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 28px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 18px 20px; }
+    .stat-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9ca3af; margin-bottom: 8px; }
+    .stat-value { font-size: 24px; font-weight: 800; color: #111827; }
+    .stat-value.orange { color: #f97316; }
+
+    .panel { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+    .panel-head { padding: 18px 22px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .panel-head h2 { font-size: 16px; font-weight: 800; }
+    .search-box { position: relative; }
+    .search-box input { padding: 9px 14px 9px 34px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 13px; outline: none; width: 240px; transition: border-color 0.2s; }
+    .search-box input:focus { border-color: #f97316; }
+    .search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #9ca3af; pointer-events: none; }
+
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    th { background: #f9fafb; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+    td { padding: 14px 16px; border-bottom: 1px solid #f3f4f6; font-size: 13px; vertical-align: top; }
+    tbody tr:hover { background: #fafafa; }
+    tbody tr:last-child td { border-bottom: none; }
+    .order-id { font-weight: 700; color: #6b7280; }
+    .cust-name { font-weight: 700; color: #111827; }
+    .cust-sub { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+    .addr { color: #6b7280; max-width: 220px; }
+    .pay-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 100px; color: #fff; white-space: nowrap; }
+    .amount { font-weight: 800; color: #111827; }
+    .created { color: #9ca3af; font-size: 12px; white-space: nowrap; }
+
+    .empty { text-align: center; padding: 64px 24px; color: #6b7280; }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .wrap { padding: 16px; }
+      .search-box input { width: 160px; }
+    }
   </style>
 </head>
 <body>
-  <h1>Orders Dashboard <a href="?logout=1" style="font-size:12px;font-weight:400;color:#6b7280;">(log out)</a></h1>
-  <p>Use this page to verify that checkout orders are being stored in the Hostinger database.</p>
-  <?php if ($result && $result->num_rows > 0): ?>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Customer</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Address</th>
-          <th>Payment</th>
-          <th>Total</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $result->fetch_assoc()): ?>
-          <tr>
-            <td>#<?= (int)$row['id'] ?></td>
-            <td><?= htmlspecialchars($row['customer_name']) ?></td>
-            <td><?= htmlspecialchars($row['email']) ?></td>
-            <td><?= htmlspecialchars($row['phone']) ?></td>
-            <td><?= htmlspecialchars($row['shipping_address'] . ', ' . $row['city'] . ', ' . $row['state'] . ' - ' . $row['pincode']) ?></td>
-            <td><?= htmlspecialchars($row['payment_method']) ?></td>
-            <td>Rs. <?= number_format((float)$row['total_amount'], 2) ?></td>
-            <td><?= htmlspecialchars($row['created_at']) ?></td>
-          </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  <?php else: ?>
-    <p class="empty">No orders yet. Once a customer places an order, it will appear here.</p>
-  <?php endif; ?>
+
+  <div class="topbar">
+    <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
+    <div class="topbar-title">Orders Dashboard</div>
+    <a href="?logout=1" class="logout-link">Log out</a>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value"><?= $totalOrders ?></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Today's Orders</div>
+        <div class="stat-value"><?= $todaysOrders ?></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value orange">Rs. <?= number_format($totalRevenue, 0) ?></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg. Order Value</div>
+        <div class="stat-value">Rs. <?= number_format($avgOrder, 0) ?></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>All Orders</h2>
+        <?php if ($totalOrders > 0): ?>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="orderSearch" placeholder="Search name, email, phone…" oninput="filterOrders(this.value)"/>
+        </div>
+        <?php endif; ?>
+      </div>
+
+      <?php if ($totalOrders === 0): ?>
+        <div class="empty">
+          <div class="empty-icon">📦</div>
+          <p>No orders yet. Once a customer places an order, it will appear here.</p>
+        </div>
+      <?php else: ?>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Shipping Address</th>
+              <th>Payment</th>
+              <th>Total</th>
+              <th>Placed</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <?php foreach ($orders as $row): ?>
+              <?php $payColor = $paymentBadgeColors[$row['payment_method']] ?? '#6b7280'; ?>
+              <tr data-search="<?= htmlspecialchars(strtolower($row['customer_name'] . ' ' . $row['email'] . ' ' . $row['phone'])) ?>">
+                <td class="order-id">#<?= (int)$row['id'] ?></td>
+                <td>
+                  <div class="cust-name"><?= htmlspecialchars($row['customer_name']) ?></div>
+                  <div class="cust-sub"><?= htmlspecialchars($row['email']) ?></div>
+                  <div class="cust-sub"><?= htmlspecialchars($row['phone']) ?></div>
+                </td>
+                <td class="addr"><?= htmlspecialchars($row['shipping_address'] . ', ' . $row['city'] . ', ' . $row['state'] . ' - ' . $row['pincode']) ?></td>
+                <td><span class="pay-badge" style="background:<?= $payColor ?>"><?= htmlspecialchars($row['payment_method']) ?></span></td>
+                <td class="amount">Rs. <?= number_format((float)$row['total_amount'], 2) ?></td>
+                <td class="created"><?= htmlspecialchars($row['created_at']) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <script>
+    function filterOrders(query) {
+      const q = query.trim().toLowerCase();
+      document.querySelectorAll('#ordersBody tr').forEach(function (tr) {
+        tr.style.display = tr.dataset.search.includes(q) ? '' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>
