@@ -23,9 +23,11 @@ async function fetchProducts() {
       PRODUCTS = data.products;
     } else {
       productsLoadError = true;
+      console.error('Failed to load products:', data.message || 'Unknown error');
     }
   } catch (err) {
     productsLoadError = true;
+    console.error('Failed to load products:', err);
   }
 }
 
