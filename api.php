@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+session_start();
+
 header('Content-Type: application/json; charset=utf-8');
 
 function sendJson(array $payload): void
@@ -28,6 +30,22 @@ try {
         exit;
     }
 
+    if ($action === 'me') {
+        if (!empty($_SESSION['user'])) {
+            sendJson(['success' => true, 'user' => $_SESSION['user']]);
+        } else {
+            sendJson(['success' => false]);
+        }
+        exit;
+    }
+
+    if ($action === 'logout') {
+        $_SESSION = [];
+        session_destroy();
+        sendJson(['success' => true]);
+        exit;
+    }
+
     $conn = connectDb();
 
     if ($action === 'register') {
@@ -37,6 +55,14 @@ try {
 
         if ($name === '' || $email === '' || $password === '') {
             throw new RuntimeException('Name, email, and password are required.');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new RuntimeException('Please enter a valid email address.');
+        }
+
+        if (strlen($password) < 8) {
+            throw new RuntimeException('Password must be at least 8 characters.');
         }
 
         $stmt = $conn->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
