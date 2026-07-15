@@ -36,14 +36,42 @@
       <div class="c-item"><div><div class="c-item-label">📍 Location</div><div class="c-item-val">Delhi, India — ships nationwide</div></div></div>
       <div class="c-item"><div><div class="c-item-label">🕐 Hours</div><div class="c-item-val">Mon–Sun, 9am – 8pm IST</div></div></div>
     </div>
-    <form onsubmit="e=>e.preventDefault()">
-      <div class="form-group"><label>Your Name</label><input type="text" placeholder="Rahul Sharma"/></div>
-      <div class="form-group"><label>Email</label><input type="email" placeholder="rahul@email.com"/></div>
-      <div class="form-group"><label>Message</label><textarea placeholder="How can we help you?"></textarea></div>
-      <button type="submit" class="btn-orange btn-full" onclick="alert('Message sent! We will get back to you within 24 hours.');return false;">Send Message</button>
+    <form id="contactForm" onsubmit="return handleContactSubmit(event)">
+      <div id="contactError" style="display:none;background:#fef2f2;color:#dc2626;font-size:13px;font-weight:600;padding:10px 14px;border-radius:8px;margin-bottom:16px;"></div>
+      <div class="form-group"><label>Your Name</label><input type="text" id="contactName" required placeholder="Rahul Sharma"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="contactEmail" required placeholder="rahul@email.com"/></div>
+      <div class="form-group"><label>Message</label><textarea id="contactMessage" required placeholder="How can we help you?"></textarea></div>
+      <button type="submit" class="btn-orange btn-full">Send Message</button>
     </form>
   </div>
 </div>
 <script src="main.js?v=2"></script>
+<script>
+function handleContactSubmit(e) {
+  e.preventDefault();
+  const errorEl = document.getElementById('contactError');
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+
+  let error = null;
+  if (!name || !email || !message) {
+    error = 'Please fill in all fields.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    error = 'Please enter a valid email address.';
+  }
+
+  if (error) {
+    errorEl.textContent = error;
+    errorEl.style.display = 'block';
+    return false;
+  }
+
+  errorEl.style.display = 'none';
+  alert('Message sent! We will get back to you within 24 hours.');
+  document.getElementById('contactForm').reset();
+  return false;
+}
+</script>
 </body>
 </html>
