@@ -48,6 +48,28 @@ try {
 
     $conn = connectDb();
 
+    if ($action === 'products') {
+        $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews FROM products ORDER BY id ASC');
+        $products = [];
+        while ($row = $result->fetch_assoc()) {
+            $products[] = [
+                'id' => (int)$row['id'],
+                'name' => $row['name'],
+                'cat' => $row['category'],
+                'price' => (float)$row['price'],
+                'orig' => $row['original_price'] !== null ? (float)$row['original_price'] : null,
+                'img' => $row['image'],
+                'sub' => $row['description'],
+                'badge' => $row['badge'],
+                'stock' => (int)$row['stock'],
+                'stars' => (int)$row['rating'],
+                'reviews' => (int)$row['reviews'],
+            ];
+        }
+        sendJson(['success' => true, 'products' => $products]);
+        exit;
+    }
+
     if ($action === 'register') {
         $name = trim((string)($input['name'] ?? ''));
         $email = trim(strtolower((string)($input['email'] ?? '')));
