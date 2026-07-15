@@ -232,7 +232,7 @@ window.addEventListener('scroll', () => {
 });
 
 // ─── SEARCH (basic) ──────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const si = document.getElementById('searchInput');
   if (si) {
     si.addEventListener('keydown', e => {
@@ -244,6 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // Init
   updateCartUI();
+  const loadingHtml = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--gray);">Loading products…</div>';
+  const bestGrid = document.getElementById('bestSellerGrid');
+  const shopGrid = document.getElementById('shopGrid');
+  if (bestGrid) bestGrid.innerHTML = loadingHtml;
+  if (shopGrid) shopGrid.innerHTML = loadingHtml;
+  await fetchProducts();
   renderBestSellers();
   renderShop();
   checkAuthState();
