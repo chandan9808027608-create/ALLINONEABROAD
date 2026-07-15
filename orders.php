@@ -49,6 +49,13 @@ if (isset($_POST['password'])) {
     }
 }
 
+if (isset($_GET['logout'])) {
+    $_SESSION = [];
+    session_destroy();
+    renderLoginForm();
+    exit;
+}
+
 if (empty($_SESSION['orders_admin'])) {
     renderLoginForm();
     exit;
