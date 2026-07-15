@@ -34,19 +34,20 @@
   <div>
     <div class="form-section">
       <h3>📦 Shipping Address</h3>
+      <div id="checkoutError" style="display:none;background:#fef2f2;color:#dc2626;font-size:13px;font-weight:600;padding:10px 14px;border-radius:8px;margin-bottom:16px;"></div>
       <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" placeholder="Rahul"/></div>
-        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Sharma"/></div>
+        <div class="form-group"><label>First Name</label><input type="text" id="ckFirstName" required placeholder="Rahul"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="ckLastName" required placeholder="Sharma"/></div>
       </div>
-      <div class="form-group"><label>Email</label><input type="email" placeholder="rahul@email.com"/></div>
-      <div class="form-group"><label>Phone</label><input type="tel" placeholder="+91 98XXX XXXXX"/></div>
-      <div class="form-group"><label>Address Line 1</label><input type="text" placeholder="Street, Colony"/></div>
-      <div class="form-group"><label>Address Line 2 (optional)</label><input type="text" placeholder="Apartment, Floor"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="ckEmail" required placeholder="rahul@email.com"/></div>
+      <div class="form-group"><label>Phone</label><input type="tel" id="ckPhone" required pattern="[0-9+\-\s()]{7,20}" placeholder="+91 98XXX XXXXX"/></div>
+      <div class="form-group"><label>Address Line 1</label><input type="text" id="ckAddr1" required placeholder="Street, Colony"/></div>
+      <div class="form-group"><label>Address Line 2 (optional)</label><input type="text" id="ckAddr2" placeholder="Apartment, Floor"/></div>
       <div class="form-row">
-        <div class="form-group"><label>City</label><input type="text" placeholder="Delhi"/></div>
-        <div class="form-group"><label>PIN Code</label><input type="text" placeholder="110001"/></div>
+        <div class="form-group"><label>City</label><input type="text" id="ckCity" required placeholder="Delhi / Kathmandu"/></div>
+        <div class="form-group"><label>Postal / PIN Code</label><input type="text" id="ckPincode" required placeholder="110001 / 44600"/></div>
       </div>
-      <div class="form-group"><label>State</label><select><option>Delhi</option><option>Maharashtra</option><option>Karnataka</option><option>Tamil Nadu</option><option>Gujarat</option><option>Rajasthan</option><option>Uttar Pradesh</option></select></div>
+      <div class="form-group"><label>State / Province</label><input type="text" id="ckState" required placeholder="e.g. Delhi or Bagmati Province"/></div>
     </div>
     <div class="form-section">
       <h3>💳 Payment Method</h3>
@@ -79,22 +80,66 @@ document.addEventListener('DOMContentLoaded', () => {
   if (t) t.textContent = 'Rs. ' + total.toLocaleString('en-IN');
 });
 
+function showCheckoutError(msg) {
+  const el = document.getElementById('checkoutError');
+  if (!el) { alert(msg); return; }
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideCheckoutError() {
+  const el = document.getElementById('checkoutError');
+  if (el) el.style.display = 'none';
+}
+
+function validateCheckout(fields) {
+  const required = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'pincode', 'state'];
+  for (const key of required) {
+    if (!fields[key]) return 'Please fill in all required shipping fields.';
+  }
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email);
+  if (!emailOk) return 'Please enter a valid email address.';
+  const phoneOk = /^[0-9+\-\s()]{7,20}$/.test(fields.phone);
+  if (!phoneOk) return 'Please enter a valid phone number.';
+  return null;
+}
+
 async function placeOrder() {
+  hideCheckoutError();
   const cart = JSON.parse(localStorage.getItem('aiaCart') || '[]');
   if (!cart.length) {
-    alert('Your cart is empty.');
+    showCheckoutError('Your cart is empty.');
+    return;
+  }
+
+  const fields = {
+    firstName: document.getElementById('ckFirstName').value.trim(),
+    lastName: document.getElementById('ckLastName').value.trim(),
+    email: document.getElementById('ckEmail').value.trim(),
+    phone: document.getElementById('ckPhone').value.trim(),
+    address: document.getElementById('ckAddr1').value.trim(),
+    address2: document.getElementById('ckAddr2').value.trim(),
+    city: document.getElementById('ckCity').value.trim(),
+    pincode: document.getElementById('ckPincode').value.trim(),
+    state: document.getElementById('ckState').value.trim(),
+  };
+
+  const validationError = validateCheckout(fields);
+  if (validationError) {
+    showCheckoutError(validationError);
     return;
   }
 
   const payload = {
     action: 'order',
-    name: document.querySelector('input[placeholder="Rahul"]').value.trim() + ' ' + document.querySelector('input[placeholder="Sharma"]').value.trim(),
-    email: document.querySelector('input[placeholder="rahul@email.com"]').value.trim(),
-    phone: document.querySelector('input[placeholder="+91 98XXX XXXXX"]').value.trim(),
-    address: document.querySelector('input[placeholder="Street, Colony"]').value.trim(),
-    city: document.querySelector('input[placeholder="Delhi"]').value.trim(),
-    state: document.querySelector('select').value,
-    pincode: document.querySelector('input[placeholder="110001"]').value.trim(),
+    name: `${fields.firstName} ${fields.lastName}`,
+    email: fields.email,
+    phone: fields.phone,
+    address: fields.address2 ? `${fields.address}, ${fields.address2}` : fields.address,
+    city: fields.city,
+    state: fields.state,
+    pincode: fields.pincode,
     paymentMethod: document.querySelector('input[name="pay"]:checked')?.parentElement?.textContent?.trim() || 'COD',
     items: cart,
     total: cart.reduce((s,i) => s + i.price*i.qty, 0)
@@ -112,10 +157,10 @@ async function placeOrder() {
       alert(`Order placed successfully! Your order ID is #${data.orderId}.`);
       window.location.href = 'index.html?order=success';
     } else {
-      alert(data.message || 'Order could not be placed.');
+      showCheckoutError(data.message || 'Order could not be placed.');
     }
   } catch (err) {
-    alert('Could not connect to the backend.');
+    showCheckoutError('Could not connect to the backend.');
   }
 }
 </script>
