@@ -111,6 +111,9 @@ $paymentBadgeColors = [
     .logo-top { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.18em; color: #6b7280; text-transform: uppercase; }
     .logo-bottom { display: block; font-size: 17px; font-weight: 900; letter-spacing: 0.04em; color: #f97316; margin-top: 2px; }
     .topbar-title { font-size: 14px; font-weight: 600; color: #6b7280; padding-left: 16px; border-left: 1px solid #e5e7eb; }
+    .nav-link { font-size: 13px; font-weight: 600; color: #6b7280; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; transition: background 0.15s; text-decoration: none; }
+    .nav-link:hover { background: #f3f4f6; }
+    .nav-link.active { background: #111827; color: #fff; border-color: #111827; }
     .logout-link { margin-left: auto; font-size: 13px; font-weight: 600; color: #6b7280; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; transition: background 0.15s; text-decoration: none; }
     .logout-link:hover { background: #f3f4f6; }
 
@@ -158,7 +161,9 @@ $paymentBadgeColors = [
 
   <div class="topbar">
     <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
-    <div class="topbar-title">Orders Dashboard</div>
+    <div class="topbar-title">Admin</div>
+    <a href="orders.php" class="nav-link active">Orders</a>
+    <a href="products.php" class="nav-link">Products</a>
     <a href="?logout=1" class="logout-link">Log out</a>
   </div>
 
