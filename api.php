@@ -108,10 +108,13 @@ try {
             throw new RuntimeException('Invalid email or password.');
         }
 
+        session_regenerate_id(true);
+        $_SESSION['user'] = ['id' => (int)$user['id'], 'name' => $user['name'], 'email' => $user['email']];
+
         sendJson([
             'success' => true,
             'message' => 'Login successful.',
-            'user' => ['id' => (int)$user['id'], 'name' => $user['name'], 'email' => $user['email']]
+            'user' => $_SESSION['user']
         ]);
         exit;
     }
@@ -130,6 +133,18 @@ try {
 
         if ($name === '' || $email === '' || $phone === '' || $address === '' || $city === '' || $state === '' || $pincode === '' || $paymentMethod === '') {
             throw new RuntimeException('Please complete all shipping and payment details.');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new RuntimeException('Please enter a valid email address.');
+        }
+
+        if (!preg_match('/^[0-9+\-\s()]{7,20}$/', $phone)) {
+            throw new RuntimeException('Please enter a valid phone number.');
+        }
+
+        if (empty($items) || !is_array($items)) {
+            throw new RuntimeException('Your cart is empty.');
         }
 
         $itemsJson = json_encode($items, JSON_UNESCAPED_SLASHES);
