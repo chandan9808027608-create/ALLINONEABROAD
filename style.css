@@ -370,7 +370,7 @@ button { cursor: pointer; font-family: inherit; }
 .site-footer { background: #0a0f1e; padding: 56px 32px 32px; }
 .footer-top {
   max-width: 1200px; margin: 0 auto;
-  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr 1.2fr; gap: 40px;
   padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08);
   margin-bottom: 28px;
 }
