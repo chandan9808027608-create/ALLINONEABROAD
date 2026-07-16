@@ -162,6 +162,6 @@ if (!$product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=2"></script>
+<script src="main.js?v=3"></script>
 </body>
 </html>
