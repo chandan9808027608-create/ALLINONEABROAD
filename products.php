@@ -22,6 +22,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'd
     exit;
 }
 
+$addResult = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'add_product') {
+    $allowedCategories = ['luggage', 'kitchen', 'bedding'];
+    $allowedExt = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
+    $maxBytes = 5 * 1024 * 1024;
+
+    $name = trim((string)($_POST['name'] ?? ''));
+    $category = strtolower(trim((string)($_POST['category'] ?? '')));
+    $price = is_numeric($_POST['price'] ?? null) ? (float)$_POST['price'] : null;
+    $origRaw = $_POST['original_price'] ?? '';
+    $origPrice = is_numeric($origRaw) && (float)$origRaw > 0 ? (float)$origRaw : null;
+    $stock = is_numeric($_POST['stock'] ?? null) ? (int)$_POST['stock'] : null;
+    $description = trim((string)($_POST['description'] ?? ''));
+    $badge = trim((string)($_POST['badge'] ?? ''));
+    $rating = is_numeric($_POST['rating'] ?? null) ? max(1, min(5, (int)$_POST['rating'])) : 5;
+    $reviews = is_numeric($_POST['reviews'] ?? null) ? max(0, (int)$_POST['reviews']) : 0;
+
+    $error = null;
+    if ($name === '') {
+        $error = 'Product name is required.';
+    } elseif (!in_array($category, $allowedCategories, true)) {
+        $error = 'Category must be luggage, kitchen, or bedding.';
+    } elseif ($price === null || $price <= 0) {
+        $error = 'Price must be a positive number.';
+    } elseif ($stock === null || $stock < 0) {
+        $error = 'Stock must be zero or a positive whole number.';
+    } elseif (!isset($_FILES['imageFile']) || $_FILES['imageFile']['error'] === UPLOAD_ERR_NO_FILE) {
+        $error = 'Please choose a product image to upload.';
+    } elseif ($_FILES['imageFile']['error'] !== UPLOAD_ERR_OK) {
+        $error = 'Image upload failed. Please try again.';
+    } elseif ($_FILES['imageFile']['size'] > $maxBytes) {
+        $error = 'Image is too large — please keep it under 5MB.';
+    } else {
+        $ext = strtolower((string)pathinfo($_FILES['imageFile']['name'], PATHINFO_EXTENSION));
+        $imageInfo = @getimagesize($_FILES['imageFile']['tmp_name']);
+        if (!isset($allowedExt[$ext]) || $imageInfo === false || $imageInfo['mime'] !== $allowedExt[$ext]) {
+            $error = 'Image must be a real JPG, PNG, WEBP, or GIF file.';
+        }
+    }
+
+    if ($error === null) {
+        $stmt = $conn->prepare('SELECT id FROM products WHERE name = ? LIMIT 1');
+        $stmt->bind_param('s', $name);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $error = 'A product named "' . $name . '" already exists. Use a different name, or manage it via the catalog table below.';
+        }
+        $stmt->close();
+    }
+
+    if ($error === null) {
+        $slug = strtolower(trim(preg_replace('/[^a-z0-9]+/', '-', $name), '-'));
+        $filename = ($slug !== '' ? $slug : 'product') . '-' . substr(uniqid(), -6) . '.' . $ext;
+        $destPath = __DIR__ . '/images/products/' . $filename;
+
+        if (!move_uploaded_file($_FILES['imageFile']['tmp_name'], $destPath)) {
+            $error = 'Could not save the uploaded image. Check that images/products/ is writable.';
+        } else {
+            $image = 'images/products/' . $filename;
+            $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?)');
+            $stmt->bind_param('ssddisssii', $name, $category, $price, $origPrice, $stock, $image, $description, $badge, $rating, $reviews);
+            if (!$stmt->execute()) {
+                $error = 'Database error while saving the product.';
+                @unlink($destPath);
+            }
+            $stmt->close();
+        }
+    }
+
+    $addResult = $error === null ? ['success' => true, 'name' => $name] : ['success' => false, 'message' => $error];
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
     $results = ['added' => 0, 'updated' => 0, 'errors' => []];
     $file = $_FILES['stockFile'];
@@ -150,6 +224,17 @@ if ($result) {
     .help-text { font-size: 12.5px; color: #6b7280; margin-top: 14px; line-height: 1.7; }
     .help-text code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
 
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #111827; display: block; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #f97316; }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+    .alert-success { background: #dcfce7; color: #16a34a; }
+    .alert-error { background: #fef2f2; color: #dc2626; }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
     .summary { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
     .summary-item { font-size: 13px; font-weight: 700; }
     .summary-item.added { color: #16a34a; }
@@ -224,6 +309,46 @@ if ($result) {
           For <code>image</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL.<br/>
           Re-uploading a spreadsheet updates existing products that match by name, and adds any new ones — nothing is deleted automatically.
         </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Add a Single Product</h2>
+      </div>
+      <div class="panel-body">
+        <?php if ($addResult): ?>
+          <?php if ($addResult['success']): ?>
+            <div class="alert alert-success">"<?= htmlspecialchars($addResult['name']) ?>" was added to the catalog.</div>
+          <?php else: ?>
+            <div class="alert alert-error"><?= htmlspecialchars($addResult['message']) ?></div>
+          <?php endif; ?>
+        <?php endif; ?>
+
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="formAction" value="add_product"/>
+          <div class="form-grid">
+            <div class="form-group"><label>Product Name *</label><input type="text" name="name" required/></div>
+            <div class="form-group">
+              <label>Category *</label>
+              <select name="category" required>
+                <option value="">Select…</option>
+                <option value="luggage">Luggage</option>
+                <option value="kitchen">Kitchen</option>
+                <option value="bedding">Bedding</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Price (Rs.) *</label><input type="number" name="price" min="0.01" step="0.01" required/></div>
+            <div class="form-group"><label>Original Price (optional, for discount)</label><input type="number" name="original_price" min="0" step="0.01"/></div>
+            <div class="form-group"><label>Stock Quantity *</label><input type="number" name="stock" min="0" step="1" required/></div>
+            <div class="form-group"><label>Badge (optional, e.g. "Best Seller")</label><input type="text" name="badge" maxlength="50"/></div>
+            <div class="form-group"><label>Rating (1–5, optional)</label><input type="number" name="rating" min="1" max="5" step="1" value="5"/></div>
+            <div class="form-group"><label>Reviews Count (optional)</label><input type="number" name="reviews" min="0" step="1" value="0"/></div>
+          </div>
+          <div class="form-group"><label>Description (optional)</label><textarea name="description" maxlength="255"></textarea></div>
+          <div class="form-group"><label>Product Image * (JPG, PNG, WEBP, or GIF — max 5MB)</label><input type="file" name="imageFile" accept=".jpg,.jpeg,.png,.webp,.gif" required/></div>
+          <button type="submit" class="btn">Add Product</button>
+        </form>
       </div>
     </div>
 
