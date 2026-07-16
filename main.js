@@ -152,7 +152,9 @@ function renderProductCard(p) {
   return `
   <div class="prod-card">
     <div class="prod-img-wrap">
-      <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
+      <a href="product.php?id=${p.id}">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
+      </a>
       <div class="prod-badges">
         ${off > 0 ? `<span class="badge badge-off">${off}% OFF</span>` : ''}
         ${p.badge ? `<span class="badge badge-tag">${p.badge}</span>` : ''}
@@ -162,7 +164,7 @@ function renderProductCard(p) {
     </div>
     <div class="prod-body">
       <div class="prod-cat">${p.cat.toUpperCase()}</div>
-      <div class="prod-name">${p.name}</div>
+      <a href="product.php?id=${p.id}" style="color:inherit;text-decoration:none;"><div class="prod-name">${p.name}</div></a>
       <div class="prod-sub">${p.sub || ''}</div>
       <div class="prod-rating">
         <span class="stars">${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</span>
