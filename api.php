@@ -48,6 +48,16 @@ try {
 
     $conn = connectDb();
 
+    if ($action === 'banner_messages') {
+        $result = $conn->query('SELECT message FROM banner_messages WHERE active = 1 ORDER BY sort_order ASC, id ASC');
+        $messages = [];
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row['message'];
+        }
+        sendJson(['success' => true, 'messages' => $messages]);
+        exit;
+    }
+
     if ($action === 'products') {
         $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews FROM products ORDER BY id ASC');
         $products = [];

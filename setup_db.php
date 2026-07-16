@@ -44,6 +44,26 @@ try {
     ");
 
     $conn->query("
+        CREATE TABLE IF NOT EXISTS banner_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            message VARCHAR(200) NOT NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            active TINYINT(1) NOT NULL DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    $bannerCount = $conn->query('SELECT COUNT(*) AS c FROM banner_messages')->fetch_assoc();
+    if ((int)$bannerCount['c'] === 0) {
+        $conn->query("
+            INSERT INTO banner_messages (message, sort_order) VALUES
+            ('🎉 Grand Opening — Up to 50% Off', 1),
+            ('🚚 Free Delivery on Orders Above Rs. 799', 2),
+            ('💳 eSewa • Khalti • FonePay • COD', 3)
+        ");
+    }
+
+    $conn->query("
         CREATE TABLE IF NOT EXISTS orders (
             id INT AUTO_INCREMENT PRIMARY KEY,
             customer_name VARCHAR(100) NOT NULL,
