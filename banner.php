@@ -1,0 +1,210 @@
+<?php
+require_once __DIR__ . '/config.php';
+
+session_start();
+
+if (empty($_SESSION['orders_admin'])) {
+    header('Location: orders.php');
+    exit;
+}
+
+$conn = connectDb();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $formAction = $_POST['formAction'] ?? '';
+
+    if ($formAction === 'add') {
+        $message = trim((string)($_POST['message'] ?? ''));
+        if ($message !== '') {
+            $maxRow = $conn->query('SELECT MAX(sort_order) AS m FROM banner_messages')->fetch_assoc();
+            $nextOrder = ((int)($maxRow['m'] ?? 0)) + 1;
+            $stmt = $conn->prepare('INSERT INTO banner_messages (message, sort_order, active) VALUES (?, ?, 1)');
+            $stmt->bind_param('si', $message, $nextOrder);
+            $stmt->execute();
+            $stmt->close();
+        }
+    } elseif ($formAction === 'update') {
+        $id = (int)($_POST['id'] ?? 0);
+        $message = trim((string)($_POST['message'] ?? ''));
+        $active = isset($_POST['active']) ? 1 : 0;
+        if ($id > 0 && $message !== '') {
+            $stmt = $conn->prepare('UPDATE banner_messages SET message = ?, active = ? WHERE id = ?');
+            $stmt->bind_param('sii', $message, $active, $id);
+            $stmt->execute();
+            $stmt->close();
+        }
+    } elseif ($formAction === 'delete') {
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $conn->prepare('DELETE FROM banner_messages WHERE id = ?');
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->close();
+        }
+    } elseif ($formAction === 'move') {
+        $id = (int)($_POST['id'] ?? 0);
+        $direction = $_POST['direction'] ?? '';
+        $messages = [];
+        $result = $conn->query('SELECT id, sort_order FROM banner_messages ORDER BY sort_order ASC, id ASC');
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row;
+        }
+        $index = null;
+        foreach ($messages as $i => $row) {
+            if ((int)$row['id'] === $id) {
+                $index = $i;
+                break;
+            }
+        }
+        $swapWith = null;
+        if ($index !== null) {
+            if ($direction === 'up' && $index > 0) {
+                $swapWith = $index - 1;
+            } elseif ($direction === 'down' && $index < count($messages) - 1) {
+                $swapWith = $index + 1;
+            }
+        }
+        if ($swapWith !== null) {
+            $a = $messages[$index];
+            $b = $messages[$swapWith];
+            $stmt = $conn->prepare('UPDATE banner_messages SET sort_order = ? WHERE id = ?');
+            $stmt->bind_param('ii', $b['sort_order'], $a['id']);
+            $stmt->execute();
+            $stmt->bind_param('ii', $a['sort_order'], $b['id']);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
+    header('Location: banner.php');
+    exit;
+}
+
+$messages = [];
+$result = $conn->query('SELECT id, message, sort_order, active FROM banner_messages ORDER BY sort_order ASC, id ASC');
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $messages[] = $row;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Banner — ALL IN ONE ABROAD</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #111827; background: #f3f4f6; }
+
+    .topbar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 16px 28px; display: flex; align-items: center; gap: 16px; }
+    .logo { line-height: 1; }
+    .logo-top { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.18em; color: #6b7280; text-transform: uppercase; }
+    .logo-bottom { display: block; font-size: 17px; font-weight: 900; letter-spacing: 0.04em; color: #f97316; margin-top: 2px; }
+    .topbar-title { font-size: 14px; font-weight: 600; color: #6b7280; padding-left: 16px; border-left: 1px solid #e5e7eb; }
+    .nav-link { font-size: 13px; font-weight: 600; color: #6b7280; padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e5e7eb; transition: background 0.15s; text-decoration: none; }
+    .nav-link:hover { background: #f3f4f6; }
+    .nav-link.active { background: #111827; color: #fff; border-color: #111827; }
+    .logout-link { margin-left: auto; }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 28px; }
+
+    .panel { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
+    .panel-head { padding: 18px 22px; border-bottom: 1px solid #e5e7eb; }
+    .panel-head h2 { font-size: 16px; font-weight: 800; }
+    .panel-body { padding: 22px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; background: #f97316; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; transition: background 0.15s; }
+    .btn:hover { background: #ea6c0a; }
+    .btn-outline { background: transparent; color: #111827; border: 1.5px solid #e5e7eb; }
+    .btn-outline:hover { background: #f3f4f6; }
+    .btn-danger { background: transparent; color: #dc2626; border: 1.5px solid #fecaca; }
+    .btn-danger:hover { background: #fef2f2; }
+    .btn-icon { padding: 6px 10px; font-size: 12px; }
+
+    .add-row { display: flex; gap: 10px; }
+    .add-row input[type="text"] { flex: 1; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; }
+    .add-row input[type="text"]:focus { border-color: #f97316; }
+
+    .msg-row { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-bottom: 1px solid #f3f4f6; }
+    .msg-row:last-child { border-bottom: none; }
+    .msg-row.inactive { opacity: 0.5; }
+    .msg-text { flex: 1; }
+    .msg-text input { width: 100%; padding: 8px 12px; border: 1.5px solid #e5e7eb; border-radius: 7px; font-size: 13px; font-family: inherit; outline: none; }
+    .msg-text input:focus { border-color: #f97316; }
+    .msg-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .msg-actions form { display: inline; }
+    .active-label { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #6b7280; white-space: nowrap; }
+
+    .help-text { font-size: 12.5px; color: #6b7280; margin-top: 14px; line-height: 1.6; }
+    .empty { text-align: center; padding: 40px 24px; color: #6b7280; font-size: 13px; }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 16px; }
+      .msg-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
+    <div class="topbar-title">Admin</div>
+    <a href="orders.php" class="nav-link">Orders</a>
+    <a href="products.php" class="nav-link">Products</a>
+    <a href="banner.php" class="nav-link active">Banner</a>
+    <a href="orders.php?logout=1" class="nav-link logout-link">Log out</a>
+  </div>
+
+  <div class="wrap">
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Top Banner Messages</h2>
+      </div>
+      <div class="panel-body">
+        <form method="post" class="add-row">
+          <input type="hidden" name="formAction" value="add"/>
+          <input type="text" name="message" maxlength="200" placeholder="e.g. 🎉 Diwali Sale — 30% Off Everything" required/>
+          <button type="submit" class="btn">Add Message</button>
+        </form>
+        <div class="help-text">
+          These messages scroll across the top of every page (Home, Shop, Checkout, Contact, and product pages). Reorder with the arrows, uncheck "Active" to hide one without deleting it, or remove it entirely. If every message is inactive or deleted, the banner disappears.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Current Messages (<?= count($messages) ?>)</h2>
+      </div>
+      <?php if (empty($messages)): ?>
+        <div class="empty">No banner messages yet. Add one above.</div>
+      <?php else: ?>
+        <?php foreach ($messages as $i => $m): ?>
+          <div class="msg-row <?= $m['active'] ? '' : 'inactive' ?>">
+            <div class="msg-actions">
+              <form method="post"><input type="hidden" name="formAction" value="move"/><input type="hidden" name="id" value="<?= (int)$m['id'] ?>"/><input type="hidden" name="direction" value="up"/><button type="submit" class="btn btn-outline btn-icon" <?= $i === 0 ? 'disabled' : '' ?>>↑</button></form>
+              <form method="post"><input type="hidden" name="formAction" value="move"/><input type="hidden" name="id" value="<?= (int)$m['id'] ?>"/><input type="hidden" name="direction" value="down"/><button type="submit" class="btn btn-outline btn-icon" <?= $i === count($messages) - 1 ? 'disabled' : '' ?>>↓</button></form>
+            </div>
+            <form method="post" class="msg-text" style="display:flex;gap:10px;align-items:center;">
+              <input type="hidden" name="formAction" value="update"/>
+              <input type="hidden" name="id" value="<?= (int)$m['id'] ?>"/>
+              <input type="text" name="message" maxlength="200" value="<?= htmlspecialchars($m['message']) ?>" required/>
+              <label class="active-label"><input type="checkbox" name="active" <?= $m['active'] ? 'checked' : '' ?>/> Active</label>
+              <button type="submit" class="btn btn-outline btn-icon">Save</button>
+            </form>
+            <form method="post" onsubmit="return confirm('Remove this banner message?');">
+              <input type="hidden" name="formAction" value="delete"/>
+              <input type="hidden" name="id" value="<?= (int)$m['id'] ?>"/>
+              <button type="submit" class="btn btn-danger btn-icon">Remove</button>
+            </form>
+          </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -31,6 +31,33 @@ async function fetchProducts() {
   }
 }
 
+// ─── TOP BANNER (admin-editable) ─────────────
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function loadBannerMessages() {
+  const bar = document.querySelector('.announce-bar');
+  const track = document.querySelector('.announce-track');
+  if (!bar || !track) return;
+  try {
+    const res = await fetch('api.php?action=banner_messages');
+    const data = await res.json();
+    if (!data.success) return;
+    if (!data.messages.length) {
+      bar.style.display = 'none';
+      return;
+    }
+    const spans = data.messages.map(m => `<span>${escapeHtml(m)}</span>`).join('');
+    track.innerHTML = spans + spans;
+    bar.style.display = '';
+  } catch (err) {
+    // Backend unreachable — leave the static fallback content in place
+  }
+}
+
 // ─── CART STATE ──────────────────────────────
 let cart = JSON.parse(localStorage.getItem('aiaCart') || '[]');
 
@@ -257,6 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderBestSellers();
   renderShop();
   checkAuthState();
+  loadBannerMessages();
 });
 
 // ─── AUTH STATE (header sign-in / account) ───

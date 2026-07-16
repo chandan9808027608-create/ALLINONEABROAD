@@ -271,6 +271,7 @@ if ($result) {
     <div class="topbar-title">Admin</div>
     <a href="orders.php" class="nav-link">Orders</a>
     <a href="products.php" class="nav-link active">Products</a>
+    <a href="banner.php" class="nav-link">Banner</a>
     <a href="orders.php?logout=1" class="nav-link logout-link">Log out</a>
   </div>
 

@@ -164,6 +164,7 @@ $paymentBadgeColors = [
     <div class="topbar-title">Admin</div>
     <a href="orders.php" class="nav-link active">Orders</a>
     <a href="products.php" class="nav-link">Products</a>
+    <a href="banner.php" class="nav-link">Banner</a>
     <a href="?logout=1" class="logout-link">Log out</a>
   </div>
 
