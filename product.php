@@ -17,6 +17,17 @@ if ($id > 0) {
 if (!$product) {
     http_response_code(404);
 }
+
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? '';
+$baseUrl = $scheme . '://' . $host;
+$canonicalUrl = $baseUrl . '/product.php?id=' . $id;
+
+if ($product) {
+    $ogTitle = $product['name'];
+    $ogDescription = $product['description'] ?: ('Shop ' . $product['name'] . ' at ALL IN ONE ABROAD — quality luggage, kitchen, and bedding essentials.');
+    $ogImage = preg_match('#^https?://#i', $product['image']) ? $product['image'] : $baseUrl . '/' . ltrim($product['image'], '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,6 +35,15 @@ if (!$product) {
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><?= $product ? htmlspecialchars($product['name']) . ' — ALL IN ONE ABROAD' : 'Product Not Found — ALL IN ONE ABROAD' ?></title>
+  <?php if ($product): ?>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="ALL IN ONE ABROAD"/>
+  <meta property="og:title" content="<?= htmlspecialchars($ogTitle) ?>"/>
+  <meta property="og:description" content="<?= htmlspecialchars($ogDescription) ?>"/>
+  <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>"/>
+  <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
+  <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
+  <?php endif; ?>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
@@ -111,6 +131,15 @@ if (!$product) {
         <?php endif; ?>
         <a href="shop.html?cat=<?= urlencode($product['category']) ?>" class="btn-outline btn-full">← Back to <?= htmlspecialchars(ucfirst($product['category'])) ?></a>
       </div>
+
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">Share this product</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-outline" onclick="shareFacebook()">📘 Facebook</button>
+          <button class="btn-outline" id="shareNativeBtn" style="display:none;" onclick="shareNative()">📤 Share to Instagram &amp; more</button>
+          <button class="btn-outline" onclick="copyProductLink()">🔗 Copy Link</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -128,7 +157,39 @@ if (!$product) {
           ], JSON_UNESCAPED_SLASHES) ?>);
         });
       }
+
+      const nativeBtn = document.getElementById('shareNativeBtn');
+      if (nativeBtn && navigator.share) {
+        nativeBtn.style.display = 'inline-flex';
+      }
     });
+
+    function shareFacebook() {
+      const url = encodeURIComponent(window.location.href);
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, 'fbshare', 'width=600,height=500');
+    }
+
+    function shareNative() {
+      if (!navigator.share) return;
+      navigator.share({
+        title: document.title,
+        text: <?= json_encode($product['name']) ?>,
+        url: window.location.href
+      }).catch(() => {});
+    }
+
+    function copyProductLink() {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('🔗 Link copied! Paste it into an Instagram Story, DM, or bio.');
+        }).catch(() => {
+          window.prompt('Copy this link:', url);
+        });
+      } else {
+        window.prompt('Copy this link:', url);
+      }
+    }
   </script>
 
 <?php endif; ?>
