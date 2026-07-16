@@ -64,6 +64,17 @@ try {
     }
 
     $conn->query("
+        CREATE TABLE IF NOT EXISTS popup_banner (
+            id INT PRIMARY KEY DEFAULT 1,
+            image VARCHAR(500) NULL,
+            link_url VARCHAR(500) NULL,
+            enabled TINYINT(1) NOT NULL DEFAULT 0,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    $conn->query('INSERT IGNORE INTO popup_banner (id, enabled) VALUES (1, 0)');
+
+    $conn->query("
         CREATE TABLE IF NOT EXISTS orders (
             id INT AUTO_INCREMENT PRIMARY KEY,
             customer_name VARCHAR(100) NOT NULL,

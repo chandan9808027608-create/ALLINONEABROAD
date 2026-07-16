@@ -74,11 +74,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
             $stmt->close();
         }
+    } elseif ($formAction === 'popup_save') {
+        $linkUrl = trim((string)($_POST['link_url'] ?? ''));
+        $enabled = isset($_POST['enabled']) ? 1 : 0;
+        $allowedExt = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
+        $maxBytes = 5 * 1024 * 1024;
+        $popupError = null;
+        $newImage = null;
+
+        if (!empty($_FILES['popupImage']) && $_FILES['popupImage']['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($_FILES['popupImage']['error'] !== UPLOAD_ERR_OK) {
+                $popupError = 'Image upload failed. Please try again.';
+            } elseif ($_FILES['popupImage']['size'] > $maxBytes) {
+                $popupError = 'Image is too large — please keep it under 5MB.';
+            } else {
+                $ext = strtolower((string)pathinfo($_FILES['popupImage']['name'], PATHINFO_EXTENSION));
+                $imageInfo = @getimagesize($_FILES['popupImage']['tmp_name']);
+                if (!isset($allowedExt[$ext]) || $imageInfo === false || $imageInfo['mime'] !== $allowedExt[$ext]) {
+                    $popupError = 'Image must be a real JPG, PNG, WEBP, or GIF file.';
+                } else {
+                    $filename = 'popup-banner-' . substr(uniqid(), -8) . '.' . $ext;
+                    $destPath = __DIR__ . '/images/products/' . $filename;
+                    if (!move_uploaded_file($_FILES['popupImage']['tmp_name'], $destPath)) {
+                        $popupError = 'Could not save the uploaded image.';
+                    } else {
+                        $newImage = 'images/products/' . $filename;
+                    }
+                }
+            }
+        }
+
+        if ($popupError === null) {
+            if ($newImage !== null) {
+                $stmt = $conn->prepare('UPDATE popup_banner SET image = ?, link_url = ?, enabled = ? WHERE id = 1');
+                $stmt->bind_param('ssi', $newImage, $linkUrl, $enabled);
+            } else {
+                $stmt = $conn->prepare('UPDATE popup_banner SET link_url = ?, enabled = ? WHERE id = 1');
+                $stmt->bind_param('si', $linkUrl, $enabled);
+            }
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $_SESSION['popup_error'] = $popupError;
+        }
     }
 
     header('Location: banner.php');
     exit;
 }
+
+$popupError = $_SESSION['popup_error'] ?? null;
+unset($_SESSION['popup_error']);
+$popup = $conn->query('SELECT image, link_url, enabled FROM popup_banner WHERE id = 1')->fetch_assoc();
 
 $messages = [];
 $result = $conn->query('SELECT id, message, sort_order, active FROM banner_messages ORDER BY sort_order ASC, id ASC');
@@ -140,6 +187,16 @@ if ($result) {
     .help-text { font-size: 12.5px; color: #6b7280; margin-top: 14px; line-height: 1.6; }
     .empty { text-align: center; padding: 40px 24px; color: #6b7280; font-size: 13px; }
 
+    .form-group { margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #111827; display: block; margin-bottom: 6px; }
+    .form-group input[type="text"], .form-group input[type="url"], .form-group input[type="file"] { width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; }
+    .form-group input:focus { border-color: #f97316; }
+    .popup-preview { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 10px; }
+    .popup-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; background: #e5e7eb; }
+    .popup-preview .status { font-size: 12px; color: #6b7280; }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+    .alert-error { background: #fef2f2; color: #dc2626; }
+
     @media (max-width: 640px) {
       .wrap { padding: 16px; }
       .msg-row { flex-wrap: wrap; }
@@ -158,6 +215,45 @@ if ($result) {
   </div>
 
   <div class="wrap">
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Popup Banner Image</h2>
+      </div>
+      <div class="panel-body">
+        <?php if ($popupError): ?>
+          <div class="alert alert-error"><?= htmlspecialchars($popupError) ?></div>
+        <?php endif; ?>
+
+        <?php if ($popup && $popup['image']): ?>
+          <div class="popup-preview">
+            <img src="<?= htmlspecialchars($popup['image']) ?>" alt="Current popup banner"/>
+            <div class="status">
+              Current image is <strong><?= $popup['enabled'] ? 'ON — showing to visitors' : 'OFF — hidden from visitors' ?></strong><?= $popup['link_url'] ? '<br/>Links to: ' . htmlspecialchars($popup['link_url']) : '' ?>
+            </div>
+          </div>
+        <?php endif; ?>
+
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="formAction" value="popup_save"/>
+          <div class="form-group">
+            <label>Banner Image <?= ($popup && $popup['image']) ? '(optional — leave blank to keep current image)' : '(JPG, PNG, WEBP, or GIF — max 5MB)' ?></label>
+            <input type="file" name="popupImage" accept=".jpg,.jpeg,.png,.webp,.gif" <?= ($popup && $popup['image']) ? '' : 'required' ?>/>
+          </div>
+          <div class="form-group">
+            <label>Link when clicked (optional)</label>
+            <input type="url" name="link_url" placeholder="e.g. shop.html?cat=luggage" value="<?= htmlspecialchars($popup['link_url'] ?? '') ?>"/>
+          </div>
+          <label class="active-label" style="margin-bottom:16px;"><input type="checkbox" name="enabled" <?= ($popup && $popup['enabled']) ? 'checked' : '' ?>/> Show this popup to visitors when the site loads</label>
+          <br/>
+          <button type="submit" class="btn">Save Popup Banner</button>
+        </form>
+
+        <div class="help-text">
+          Shows once per visit as a closeable overlay when someone loads the site. Uncheck "Show this popup" to turn it off without losing the image — you can turn it back on later without re-uploading.
+        </div>
+      </div>
+    </div>
 
     <div class="panel">
       <div class="panel-head">

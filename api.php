@@ -48,6 +48,16 @@ try {
 
     $conn = connectDb();
 
+    if ($action === 'popup_banner') {
+        $row = $conn->query('SELECT image, link_url, enabled FROM popup_banner WHERE id = 1')->fetch_assoc();
+        if (!$row || !$row['enabled'] || !$row['image']) {
+            sendJson(['success' => true, 'enabled' => false]);
+        } else {
+            sendJson(['success' => true, 'enabled' => true, 'image' => $row['image'], 'link' => $row['link_url']]);
+        }
+        exit;
+    }
+
     if ($action === 'banner_messages') {
         $result = $conn->query('SELECT message FROM banner_messages WHERE active = 1 ORDER BY sort_order ASC, id ASC');
         $messages = [];
