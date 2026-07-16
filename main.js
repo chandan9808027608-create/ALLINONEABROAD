@@ -58,6 +58,59 @@ async function loadBannerMessages() {
   }
 }
 
+// ─── POPUP BANNER (admin-editable, closeable) ─
+async function loadPopupBanner() {
+  if (sessionStorage.getItem('aiaPopupDismissed')) return;
+  try {
+    const res = await fetch('api.php?action=popup_banner');
+    const data = await res.json();
+    if (!data.success || !data.enabled || !data.image) return;
+    showPopupBanner(data.image, data.link);
+  } catch (err) {
+    // Backend unreachable — just skip the popup
+  }
+}
+
+function showPopupBanner(image, link) {
+  const overlay = document.createElement('div');
+  overlay.id = 'popupBannerOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;';
+
+  const card = document.createElement('div');
+  card.style.cssText = 'position:relative;max-width:480px;width:100%;';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '×';
+  closeBtn.setAttribute('aria-label', 'Close');
+  closeBtn.style.cssText = 'position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;background:#111827;color:#fff;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+
+  const img = document.createElement('img');
+  img.src = image;
+  img.alt = 'Promotion';
+  img.style.cssText = 'max-width:100%;max-height:80vh;border-radius:16px;display:block;width:100%;';
+  img.onerror = () => handleImgError(img);
+
+  let mediaEl = img;
+  if (link) {
+    const a = document.createElement('a');
+    a.href = link;
+    a.appendChild(img);
+    mediaEl = a;
+  }
+
+  card.appendChild(closeBtn);
+  card.appendChild(mediaEl);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  function dismiss() {
+    overlay.remove();
+    sessionStorage.setItem('aiaPopupDismissed', '1');
+  }
+  closeBtn.addEventListener('click', dismiss);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(); });
+}
+
 // ─── CART STATE ──────────────────────────────
 let cart = JSON.parse(localStorage.getItem('aiaCart') || '[]');
 
@@ -285,6 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderShop();
   checkAuthState();
   loadBannerMessages();
+  loadPopupBanner();
 });
 
 // ─── AUTH STATE (header sign-in / account) ───
