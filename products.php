@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'd
 $addResult = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'add_product') {
-    $allowedCategories = ['luggage', 'kitchen', 'bedding'];
+    $allowedCategories = ['luggage', 'kitchen'];
     $allowedExt = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
     $maxBytes = 5 * 1024 * 1024;
 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
     if ($name === '') {
         $error = 'Product name is required.';
     } elseif (!in_array($category, $allowedCategories, true)) {
-        $error = 'Category must be luggage, kitchen, or bedding.';
+        $error = 'Category must be luggage or kitchen.';
     } elseif ($price === null || $price <= 0) {
         $error = 'Price must be a positive number.';
     } elseif ($stock === null || $stock < 0) {
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
     $results = ['added' => 0, 'updated' => 0, 'errors' => []];
     $file = $_FILES['stockFile'];
-    $allowedCategories = ['luggage', 'kitchen', 'bedding'];
+    $allowedCategories = ['luggage', 'kitchen'];
 
     if ($file['error'] !== UPLOAD_ERR_OK) {
         $results['errors'][] = 'Upload failed. Please choose a file and try again.';
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $reviews = isset($data['reviews']) && is_numeric($data['reviews']) ? max(0, (int)$data['reviews']) : 0;
 
                         if ($name === '' || !in_array($category, $allowedCategories, true) || $price === null || $price <= 0 || $stock === null || $stock < 0 || $image === '') {
-                            $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen/bedding), price, stock, and image.";
+                            $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen), price, stock, and image.";
                             continue;
                         }
 
@@ -305,7 +305,7 @@ if ($result) {
 
         <div class="help-text">
           Upload a <code>.csv</code> file (export from Excel or Google Sheets as CSV — not <code>.xlsx</code>).<br/>
-          Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code>, <code>kitchen</code>, or <code>bedding</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
+          Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code> or <code>kitchen</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
           Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>.<br/>
           For <code>image</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL.<br/>
           Re-uploading a spreadsheet updates existing products that match by name, and adds any new ones — nothing is deleted automatically.
@@ -336,7 +336,6 @@ if ($result) {
                 <option value="">Select…</option>
                 <option value="luggage">Luggage</option>
                 <option value="kitchen">Kitchen</option>
-                <option value="bedding">Bedding</option>
               </select>
             </div>
             <div class="form-group"><label>Price (Rs.) *</label><input type="number" name="price" min="0.01" step="0.01" required/></div>

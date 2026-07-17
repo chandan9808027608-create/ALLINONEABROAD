@@ -229,7 +229,7 @@ button { cursor: pointer; font-family: inherit; }
 .btn-outline:hover { background: var(--light); }
 
 /* CATEGORIES */
-.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .cat-card {
   position: relative; border-radius: 16px; overflow: hidden;
   aspect-ratio: 3/4; display: block; cursor: pointer;

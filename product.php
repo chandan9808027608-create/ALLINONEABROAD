@@ -25,7 +25,7 @@ $canonicalUrl = $baseUrl . '/product.php?id=' . $id;
 
 if ($product) {
     $ogTitle = $product['name'];
-    $ogDescription = $product['description'] ?: ('Shop ' . $product['name'] . ' at ALL IN ONE ABROAD — quality luggage, kitchen, and bedding essentials.');
+    $ogDescription = $product['description'] ?: ('Shop ' . $product['name'] . ' at ALL IN ONE ABROAD — quality luggage and kitchen essentials.');
     $ogImage = preg_match('#^https?://#i', $product['image']) ? $product['image'] : $baseUrl . '/' . ltrim($product['image'], '/');
 }
 ?>
@@ -56,12 +56,11 @@ if ($product) {
     <a href="index.html" class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></a>
     <form class="search-form" onsubmit="return false;">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search luggage, cookers, blankets…" id="searchInput"/>
+      <input type="text" placeholder="Search luggage, cookers, tiffins…" id="searchInput"/>
     </form>
     <nav class="main-nav">
       <a href="shop.html?cat=luggage" data-cat="luggage">Luggage</a>
       <a href="shop.html?cat=kitchen" data-cat="kitchen">Kitchen</a>
-      <a href="shop.html?cat=bedding" data-cat="bedding">Bedding</a>
       <a href="shop.html" data-cat="all">All Products</a>
     </nav>
     <div class="header-actions">
@@ -73,7 +72,7 @@ if ($product) {
   </div>
   <div class="mobile-nav" id="mobileNav">
     <a href="shop.html?cat=luggage">Luggage</a><a href="shop.html?cat=kitchen">Kitchen</a>
-    <a href="shop.html?cat=bedding">Bedding</a><a href="shop.html">All Products</a><a href="login.html">Sign In</a>
+    <a href="shop.html">All Products</a><a href="login.html">Sign In</a>
   </div>
 </header>
 
@@ -205,7 +204,7 @@ if ($product) {
           <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
         </div>
       </div>
-      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li><li><a href="shop.html?cat=bedding">Bedding</a></li></ul></div>
+      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li></ul></div>
       <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
       <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
       <!-- PLACEHOLDER CONTACT INFO — prototype only, replace with real business details before launch -->
@@ -223,6 +222,6 @@ if ($product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=5"></script>
+<script src="main.js?v=6"></script>
 </body>
 </html>

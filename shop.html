@@ -16,12 +16,11 @@
     <a href="index.html" class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></a>
     <form class="search-form" onsubmit="return false;">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search luggage, cookers, blankets…" id="searchInput"/>
+      <input type="text" placeholder="Search luggage, cookers, tiffins…" id="searchInput"/>
     </form>
     <nav class="main-nav">
       <a href="shop.html?cat=luggage" data-cat="luggage">Luggage</a>
       <a href="shop.html?cat=kitchen" data-cat="kitchen">Kitchen</a>
-      <a href="shop.html?cat=bedding" data-cat="bedding">Bedding</a>
       <a href="shop.html" data-cat="all">All Products</a>
     </nav>
     <div class="header-actions">
@@ -33,14 +32,14 @@
   </div>
   <div class="mobile-nav" id="mobileNav">
     <a href="shop.html?cat=luggage">Luggage</a><a href="shop.html?cat=kitchen">Kitchen</a>
-    <a href="shop.html?cat=bedding">Bedding</a><a href="shop.html">All Products</a><a href="login.html">Sign In</a>
+    <a href="shop.html">All Products</a><a href="login.html">Sign In</a>
   </div>
 </header>
 
 <div class="shop-hero">
   <div class="container">
     <h1 id="shopTitle">All Products</h1>
-    <p id="shopDesc">Everything you need — luggage, kitchen, and bedding.</p>
+    <p id="shopDesc">Everything you need — luggage and kitchen.</p>
   </div>
 </div>
 
@@ -51,7 +50,6 @@
       <label class="filter-opt"><input type="radio" name="cat" value="all" onchange="location.href='shop.html?cat=all'"> <span>All Products</span></label>
       <label class="filter-opt"><input type="radio" name="cat" value="luggage" onchange="location.href='shop.html?cat=luggage'"> <span>Luggage &amp; Bags</span></label>
       <label class="filter-opt"><input type="radio" name="cat" value="kitchen" onchange="location.href='shop.html?cat=kitchen'"> <span>Kitchen Essentials</span></label>
-      <label class="filter-opt"><input type="radio" name="cat" value="bedding" onchange="location.href='shop.html?cat=bedding'"> <span>Bedding &amp; Comfort</span></label>
     </div>
     <div class="filter-box">
       <div class="filter-title">Price Range</div>
@@ -91,7 +89,7 @@
           <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
         </div>
       </div>
-      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li><li><a href="shop.html?cat=bedding">Bedding</a></li></ul></div>
+      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li></ul></div>
       <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
       <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
       <!-- PLACEHOLDER CONTACT INFO — prototype only, replace with real business details before launch -->
@@ -117,6 +115,6 @@
     if (radio) radio.checked = true;
   });
 </script>
-<script src="main.js?v=5"></script>
+<script src="main.js?v=6"></script>
 </body>
 </html>

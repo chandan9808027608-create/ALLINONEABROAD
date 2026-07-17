@@ -288,8 +288,7 @@ function renderShop() {
   const catMap = {
     luggage: { t: 'Luggage & Bags', d: 'Trolleys, backpacks & sets built for international travel.' },
     kitchen: { t: 'Kitchen Essentials', d: 'Pressure cookers, induction cooktops, tiffins & masala dabbas.' },
-    bedding: { t: 'Bedding & Comfort', d: 'Warm blankets, memory foam pillows and quick-dry towel sets.' },
-    all:     { t: 'All Products', d: 'Everything you need — luggage, kitchen, and bedding.' },
+    all:     { t: 'All Products', d: 'Everything you need — luggage and kitchen.' },
   };
   if (titleEl) titleEl.textContent = q ? `Search results for "${q}"` : (catMap[cat]?.t || 'All Products');
   if (descEl) descEl.textContent = catMap[cat]?.d || '';
