@@ -25,11 +25,11 @@ CONNECTING A DOMAIN:
 
 TO DO NEXT (to make it fully functional):
 - Replace Unsplash images with your own product photos
-- Add real contact number and email
 - Integrate a payment gateway (Razorpay, eSewa API, etc.)
 - Connect a backend (PHP or Node.js) for orders
 - Add Google Analytics tracking code
 
 SUPPORT:
-  hello@allinoneabroad.com
+  luvkushgupta37@gmail.com
+  +977 9809497026
 ==============================================
