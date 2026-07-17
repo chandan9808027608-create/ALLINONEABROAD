@@ -229,10 +229,11 @@ button { cursor: pointer; font-family: inherit; }
 .btn-outline:hover { background: var(--light); }
 
 /* CATEGORIES */
-.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.cat-section .container { max-width: 1440px; }
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .cat-card {
   position: relative; border-radius: 16px; overflow: hidden;
-  aspect-ratio: 3/4; display: block; cursor: pointer;
+  aspect-ratio: 16/9; display: block; cursor: pointer;
 }
 .cat-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
 .cat-card:hover img { transform: scale(1.06); }
