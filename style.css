@@ -501,6 +501,20 @@ button { cursor: pointer; font-family: inherit; }
 .pdp-orig { font-size: 16px; color: var(--lgray); text-decoration: line-through; margin-bottom: 20px; }
 .pdp-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
 
+.pdp-detail-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+.detail-card { border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; background: #fff; }
+.detail-card-head { background: var(--dark); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 20px; }
+.detail-card-body { padding: 20px; }
+.detail-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--dark); line-height: 1.6; margin-bottom: 10px; }
+.detail-list li:last-child { margin-bottom: 0; }
+.detail-check { color: var(--orange); font-weight: 800; flex-shrink: 0; }
+.spec-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.spec-table tr { border-bottom: 1px solid var(--border); }
+.spec-table tr:last-child { border-bottom: none; }
+.spec-table td { padding: 10px 0; }
+.spec-table td:first-child { color: var(--gray); font-weight: 600; width: 45%; }
+.spec-table td:last-child { color: var(--dark); font-weight: 600; text-align: right; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
   .prod-grid { grid-template-columns: repeat(3, 1fr); }
@@ -528,6 +542,7 @@ button { cursor: pointer; font-family: inherit; }
   .shop-layout { grid-template-columns: 1fr; }
   .shop-sidebar { display: none; }
   .pdp-layout { grid-template-columns: 1fr; }
+  .pdp-detail-cards { grid-template-columns: 1fr; padding: 0 20px; }
 }
 @media (max-width: 480px) {
   .prod-grid { grid-template-columns: 1fr; }

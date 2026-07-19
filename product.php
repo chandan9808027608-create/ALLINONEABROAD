@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=2"/>
+  <link rel="stylesheet" href="style.css?v=3"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -95,6 +95,13 @@ if ($product) {
     $outOfStock = $stock <= 0;
     $stars = (int)$product['rating'];
     $reviews = (int)$product['reviews'];
+    $features = $product['description'] ? array_filter(array_map('trim', explode(',', $product['description']))) : [];
+    $specs = [
+      'Category'     => ucfirst($product['category']),
+      'Price'        => 'Rs. ' . number_format($price, 2),
+      'Availability' => $outOfStock ? 'Out of stock' : ($stock <= 5 ? "Only {$stock} left" : 'In stock'),
+      'Rating'       => $stars > 0 ? "{$stars} / 5 ({$reviews} reviews)" : 'Not yet rated',
+    ];
   ?>
 
   <div class="pdp-layout">
@@ -137,6 +144,33 @@ if ($product) {
           <button class="btn-outline" onclick="shareFacebook()">📘 Facebook</button>
           <button class="btn-outline" id="shareNativeBtn" style="display:none;" onclick="shareNative()">📤 Share to Instagram &amp; more</button>
           <button class="btn-outline" onclick="copyProductLink()">🔗 Copy Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0;">
+    <div class="pdp-detail-cards">
+      <?php if ($features): ?>
+      <div class="detail-card">
+        <div class="detail-card-head">Key Features</div>
+        <div class="detail-card-body">
+          <ul class="detail-list">
+            <?php foreach ($features as $feature): ?>
+              <li><span class="detail-check">✓</span><?= htmlspecialchars($feature) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      </div>
+      <?php endif; ?>
+      <div class="detail-card">
+        <div class="detail-card-head">Specifications</div>
+        <div class="detail-card-body">
+          <table class="spec-table">
+            <?php foreach ($specs as $label => $value): ?>
+              <tr><td><?= htmlspecialchars($label) ?></td><td><?= htmlspecialchars($value) ?></td></tr>
+            <?php endforeach; ?>
+          </table>
         </div>
       </div>
     </div>
