@@ -43,6 +43,25 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ");
 
+    $columnExists = function (mysqli $conn, string $table, string $column): bool {
+        $stmt = $conn->prepare('SELECT COUNT(*) c FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?');
+        $stmt->bind_param('ss', $table, $column);
+        $stmt->execute();
+        $count = (int)$stmt->get_result()->fetch_assoc()['c'];
+        $stmt->close();
+        return $count > 0;
+    };
+
+    if (!$columnExists($conn, 'products', 'images')) {
+        $conn->query('ALTER TABLE products ADD COLUMN images VARCHAR(1000) NULL AFTER image');
+    }
+    if (!$columnExists($conn, 'products', 'colors')) {
+        $conn->query('ALTER TABLE products ADD COLUMN colors VARCHAR(255) NULL AFTER images');
+    }
+    if (!$columnExists($conn, 'products', 'country_of_origin')) {
+        $conn->query('ALTER TABLE products ADD COLUMN country_of_origin VARCHAR(100) NULL AFTER colors');
+    }
+
     $conn->query("
         CREATE TABLE IF NOT EXISTS banner_messages (
             id INT AUTO_INCREMENT PRIMARY KEY,

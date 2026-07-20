@@ -495,11 +495,25 @@ button { cursor: pointer; font-family: inherit; }
 
 /* PRODUCT DETAIL */
 .pdp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1200px; margin: 40px auto; padding: 0 32px; }
+.pdp-gallery-wrap { display: flex; gap: 14px; }
+.pdp-thumbs { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.pdp-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1.5px solid var(--border); opacity: 0.75; transition: opacity 0.15s, border-color 0.15s; }
+.pdp-thumb:hover { opacity: 1; }
+.pdp-thumb.active { opacity: 1; border-color: var(--orange); }
+.pdp-gallery { flex: 1; min-width: 0; }
 .pdp-gallery img { width: 100%; border-radius: 16px; object-fit: cover; aspect-ratio: 1; }
 .pdp-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
 .pdp-price { font-size: 32px; font-weight: 900; color: var(--orange); margin-bottom: 6px; }
-.pdp-orig { font-size: 16px; color: var(--lgray); text-decoration: line-through; margin-bottom: 20px; }
+.pdp-discount-badge { background: #fce7f3; color: #db2777; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
+.pdp-orig { font-size: 16px; color: var(--lgray); text-decoration: line-through; margin-bottom: 8px; }
 .pdp-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.pdp-color-select { width: 100%; max-width: 220px; padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; }
+.pdp-color-select:focus { border-color: var(--orange); }
+.pdp-trust-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; padding: 16px 0; border-top: 1px solid var(--border); }
+.pdp-trust-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.pdp-trust-title { font-weight: 700; color: var(--dark); }
+.pdp-trust-sub { color: var(--gray); font-size: 12px; }
+.pdp-shipping-box { border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-top: 16px; }
 
 .pdp-detail-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 .detail-card { border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; background: #fff; }

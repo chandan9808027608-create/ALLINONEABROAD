@@ -6,7 +6,7 @@ $id = (int)($_GET['id'] ?? 0);
 $product = null;
 
 if ($id > 0) {
-    $stmt = $conn->prepare('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews FROM products WHERE id = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id, name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews FROM products WHERE id = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=3"/>
+  <link rel="stylesheet" href="style.css?v=4"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -96,39 +96,76 @@ if ($product) {
     $stars = (int)$product['rating'];
     $reviews = (int)$product['reviews'];
     $features = $product['description'] ? array_filter(array_map('trim', explode(',', $product['description']))) : [];
+    $countryOfOrigin = trim((string)($product['country_of_origin'] ?? ''));
     $specs = [
       'Category'     => ucfirst($product['category']),
       'Price'        => 'Rs. ' . number_format($price, 2),
       'Availability' => $outOfStock ? 'Out of stock' : ($stock <= 5 ? "Only {$stock} left" : 'In stock'),
       'Rating'       => $stars > 0 ? "{$stars} / 5 ({$reviews} reviews)" : 'Not yet rated',
     ];
+    if ($countryOfOrigin !== '') {
+      $specs['Country of Origin'] = $countryOfOrigin;
+    }
+
+    $extraImages = $product['images'] ? array_filter(array_map('trim', explode('|', $product['images']))) : [];
+    $galleryImages = array_values(array_unique(array_merge([$product['image']], $extraImages)));
+    $colors = $product['colors'] ? array_filter(array_map('trim', explode('|', $product['colors']))) : [];
   ?>
 
   <div class="pdp-layout">
-    <div class="pdp-gallery">
-      <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="handleImgError(this)"/>
+    <div class="pdp-gallery-wrap">
+      <?php if (count($galleryImages) > 1): ?>
+      <div class="pdp-thumbs">
+        <?php foreach ($galleryImages as $i => $img): ?>
+          <img src="<?= htmlspecialchars($img) ?>" alt="" class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)" onerror="handleImgError(this)"/>
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+      <div class="pdp-gallery">
+        <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
+      </div>
     </div>
     <div class="pdp-info">
       <div class="prod-cat"><?= htmlspecialchars(strtoupper($product['category'])) ?></div>
-      <h1 class="pdp-title"><?= htmlspecialchars($product['name']) ?></h1>
-      <div class="prod-rating" style="margin-bottom:14px;">
-        <span class="stars"><?= str_repeat('★', $stars) . str_repeat('☆', 5 - $stars) ?></span>
-        <span class="review-ct">(<?= number_format($reviews) ?> reviews)</span>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <h1 class="pdp-title"><?= htmlspecialchars($product['name']) ?></h1>
+        <button class="icon-btn" title="Wishlist" style="flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
       </div>
-      <div class="pdp-price">Rs. <?= number_format($price, 2) ?></div>
-      <?php if ($off > 0): ?>
-        <div class="pdp-orig">Rs. <?= number_format($orig, 2) ?> <span style="color:var(--orange);text-decoration:none;font-weight:700;">(<?= (int)$off ?>% OFF)</span></div>
-      <?php endif; ?>
-      <div style="margin:6px 0 16px;">
+      <div class="prod-rating" style="justify-content:space-between;margin-bottom:14px;">
+        <span>
+          <span class="stars"><?= str_repeat('★', $stars) . str_repeat('☆', 5 - $stars) ?></span>
+          <span class="review-ct"><?= $stars ?>/5 | <?= number_format($reviews) ?> Ratings and <?= number_format($reviews) ?> Reviews</span>
+        </span>
         <?php if ($outOfStock): ?>
-          <span class="badge" style="background:#6b7280;color:#fff;">OUT OF STOCK</span>
+          <span style="color:#6b7280;font-weight:700;font-size:13px;">Out of Stock</span>
         <?php else: ?>
-          <span class="badge badge-green">In Stock<?= $stock <= 5 ? ' — only ' . $stock . ' left' : '' ?></span>
+          <span style="color:#16a34a;font-weight:700;font-size:13px;">In Stock</span>
         <?php endif; ?>
       </div>
-      <?php if ($product['description']): ?>
-        <p style="color:var(--gray);font-size:14px;line-height:1.7;margin-bottom:8px;"><?= htmlspecialchars($product['description']) ?></p>
+
+      <?php if ($colors): ?>
+      <div class="form-group" style="margin-bottom:18px;">
+        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">Color:</label>
+        <select class="pdp-color-select">
+          <?php foreach ($colors as $color): ?>
+            <option><?= htmlspecialchars($color) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
       <?php endif; ?>
+
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+        <span class="pdp-price">Rs. <?= number_format($price, 2) ?></span>
+        <?php if ($off > 0): ?><span class="pdp-discount-badge">-<?= (int)$off ?>%</span><?php endif; ?>
+        <span style="font-size:12px;color:var(--lgray);">Tax Inc.</span>
+      </div>
+      <?php if ($off > 0): ?>
+        <div class="pdp-orig">Rs. <?= number_format($orig, 2) ?> <span style="color:var(--orange);text-decoration:none;font-weight:700;">Save Rs. <?= number_format($orig - $price, 2) ?></span></div>
+      <?php endif; ?>
+      <?php if ($countryOfOrigin !== ''): ?>
+        <div style="font-size:13px;color:var(--gray);margin:10px 0;">Country of Origin: <strong style="color:var(--dark);"><?= htmlspecialchars($countryOfOrigin) ?></strong></div>
+      <?php endif; ?>
+
       <div class="pdp-btns">
         <?php if ($outOfStock): ?>
           <button class="btn-orange btn-full" disabled style="opacity:0.5;cursor:not-allowed;">OUT OF STOCK</button>
@@ -136,6 +173,19 @@ if ($product) {
           <button class="btn-orange btn-full" id="pdpAddBtn">ADD TO CART</button>
         <?php endif; ?>
         <a href="shop.html?cat=<?= urlencode($product['category']) ?>" class="btn-outline btn-full">← Back to <?= htmlspecialchars(ucfirst($product['category'])) ?></a>
+      </div>
+
+      <div class="pdp-trust-row">
+        <div class="pdp-trust-item"><span>🛡️</span><div><div class="pdp-trust-title">100% Genuine</div><div class="pdp-trust-sub">Quality guaranteed</div></div></div>
+        <div class="pdp-trust-item"><span>↩️</span><div><div class="pdp-trust-title">Easy Returns</div><div class="pdp-trust-sub">7-day hassle-free</div></div></div>
+      </div>
+
+      <div class="pdp-shipping-box">
+        <div style="font-weight:800;font-size:14px;margin-bottom:10px;">Shipping</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--gray);margin-bottom:8px;">
+          <span>🕐 Estimated Delivery: 3–5 days</span><span>Rs. 0</span>
+        </div>
+        <div class="cart-note" style="margin:0;">🎉 Free delivery on orders above Rs. 799</div>
       </div>
 
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
@@ -196,6 +246,12 @@ if ($product) {
         nativeBtn.style.display = 'inline-flex';
       }
     });
+
+    function pdpSetImage(thumb) {
+      document.getElementById('pdpMainImage').src = thumb.src;
+      document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+    }
 
     function shareFacebook() {
       const url = encodeURIComponent(window.location.href);

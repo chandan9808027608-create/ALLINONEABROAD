@@ -39,6 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
     $badge = trim((string)($_POST['badge'] ?? ''));
     $rating = is_numeric($_POST['rating'] ?? null) ? max(1, min(5, (int)$_POST['rating'])) : 5;
     $reviews = is_numeric($_POST['reviews'] ?? null) ? max(0, (int)$_POST['reviews']) : 0;
+    $images = trim((string)($_POST['images'] ?? ''));
+    $colors = trim((string)($_POST['colors'] ?? ''));
+    $countryOfOrigin = trim((string)($_POST['country_of_origin'] ?? ''));
 
     $error = null;
     if ($name === '') {
@@ -83,8 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
             $error = 'Could not save the uploaded image. Check that images/products/ is writable.';
         } else {
             $image = 'images/products/' . $filename;
-            $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?)');
-            $stmt->bind_param('ssddisssii', $name, $category, $price, $origPrice, $stock, $image, $description, $badge, $rating, $reviews);
+            $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            $stmt->bind_param('ssddissssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $description, $badge, $rating, $reviews);
             if (!$stmt->execute()) {
                 $error = 'Database error while saving the product.';
                 @unlink($destPath);
@@ -143,6 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $badge = trim((string)($data['badge'] ?? ''));
                         $rating = isset($data['rating']) && is_numeric($data['rating']) ? max(1, min(5, (int)$data['rating'])) : 5;
                         $reviews = isset($data['reviews']) && is_numeric($data['reviews']) ? max(0, (int)$data['reviews']) : 0;
+                        $images = trim((string)($data['images'] ?? ''));
+                        $colors = trim((string)($data['colors'] ?? ''));
+                        $countryOfOrigin = trim((string)($data['country_of_origin'] ?? ''));
 
                         if ($name === '' || !in_array($category, $allowedCategories, true) || $price === null || $price <= 0 || $stock === null || $stock < 0 || $image === '') {
                             $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen), price, stock, and image.";
@@ -160,9 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $exists = $stmt->num_rows > 0;
                         $stmt->close();
 
-                        $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?)
-                            ON DUPLICATE KEY UPDATE category=VALUES(category), price=VALUES(price), original_price=VALUES(original_price), stock=VALUES(stock), image=VALUES(image), description=VALUES(description), badge=VALUES(badge), rating=VALUES(rating), reviews=VALUES(reviews)');
-                        $stmt->bind_param('ssddisssii', $name, $category, $price, $origPrice, $stock, $image, $description, $badge, $rating, $reviews);
+                        $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+                            ON DUPLICATE KEY UPDATE category=VALUES(category), price=VALUES(price), original_price=VALUES(original_price), stock=VALUES(stock), image=VALUES(image), images=VALUES(images), colors=VALUES(colors), country_of_origin=VALUES(country_of_origin), description=VALUES(description), badge=VALUES(badge), rating=VALUES(rating), reviews=VALUES(reviews)');
+                        $stmt->bind_param('ssddissssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $description, $badge, $rating, $reviews);
                         if ($stmt->execute()) {
                             $exists ? $results['updated']++ : $results['added']++;
                         } else {
@@ -306,8 +312,8 @@ if ($result) {
         <div class="help-text">
           Upload a <code>.csv</code> file (export from Excel or Google Sheets as CSV — not <code>.xlsx</code>).<br/>
           Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code> or <code>kitchen</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
-          Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>.<br/>
-          For <code>image</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL.<br/>
+          Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>, <code>images</code> (extra gallery photos), <code>colors</code>, <code>country_of_origin</code>.<br/>
+          For <code>image</code> and <code>images</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL. For <code>images</code> (extra gallery photos) and <code>colors</code>, separate multiple values with <code>|</code> (pipe), e.g. <code>photo2.jpg|photo3.jpg</code> or <code>Mint|Ocean Blue|Black</code>.<br/>
           Re-uploading a spreadsheet updates existing products that match by name, and adds any new ones — nothing is deleted automatically.
         </div>
       </div>
@@ -347,6 +353,11 @@ if ($result) {
           </div>
           <div class="form-group"><label>Description (optional)</label><textarea name="description" maxlength="255"></textarea></div>
           <div class="form-group"><label>Product Image * (JPG, PNG, WEBP, or GIF — max 5MB)</label><input type="file" name="imageFile" accept=".jpg,.jpeg,.png,.webp,.gif" required/></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Extra Gallery Images (optional)</label><input type="text" name="images" placeholder="photo2.jpg|photo3.jpg"/></div>
+            <div class="form-group"><label>Colors (optional)</label><input type="text" name="colors" placeholder="Mint|Ocean Blue|Black"/></div>
+          </div>
+          <div class="form-group"><label>Country of Origin (optional)</label><input type="text" name="country_of_origin" placeholder="e.g. India"/></div>
           <button type="submit" class="btn">Add Product</button>
         </form>
       </div>
