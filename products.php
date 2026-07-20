@@ -22,6 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'd
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'clear_all') {
+    $conn->query('DELETE FROM products');
+    header('Location: products.php');
+    exit;
+}
+
 $addResult = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'add_product') {
@@ -366,6 +372,12 @@ if ($result) {
     <div class="panel">
       <div class="panel-head">
         <h2>Current Catalog (<?= count($products) ?>)</h2>
+        <?php if ($products): ?>
+        <form method="post" onsubmit="return confirm('This will permanently delete ALL ' + <?= count($products) ?> + ' products from the catalog. This cannot be undone. Continue?');">
+          <input type="hidden" name="formAction" value="clear_all"/>
+          <button type="submit" class="btn btn-danger" style="padding:8px 16px;">Clear All Products</button>
+        </form>
+        <?php endif; ?>
       </div>
       <?php if (empty($products)): ?>
         <div class="empty">No products yet. Upload a spreadsheet above to add your first items — or start from <a href="products_seed.csv" download>the current live catalog as a CSV</a> to seed it in one click.</div>
