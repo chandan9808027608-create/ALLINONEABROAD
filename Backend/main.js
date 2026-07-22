@@ -323,6 +323,24 @@ window.addEventListener('scroll', () => {
   if (h) h.style.boxShadow = window.scrollY > 10 ? '0 2px 16px rgba(0,0,0,0.1)' : '';
 });
 
+// ─── HERO SLIDER (hover left/right to browse) ─
+let heroSlideIndex = 0;
+function setHeroSlide(i) {
+  const slides = document.getElementById('heroSlides');
+  const dots = document.querySelectorAll('#heroDots .dot');
+  if (!slides || !dots.length) return;
+  const total = dots.length;
+  heroSlideIndex = ((i % total) + total) % total;
+  slides.style.transform = `translateX(-${heroSlideIndex * (100 / total)}%)`;
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === heroSlideIndex));
+}
+function heroNextSlide() { setHeroSlide(heroSlideIndex + 1); }
+function heroPrevSlide() { setHeroSlide(heroSlideIndex - 1); }
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.getElementById('heroSlider');
+  if (slider) slider.addEventListener('mouseleave', () => setHeroSlide(0));
+});
+
 // ─── SEARCH (basic) ──────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   const si = document.getElementById('searchInput');

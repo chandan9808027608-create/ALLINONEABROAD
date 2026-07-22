@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="All In One Abroad — Trolley bags and cooking essentials for Indian students and professionals going abroad."/>
   <title>ALL IN ONE ABROAD — Luggage & Kitchen</title>
-  <link rel="stylesheet" href="style.css?v=12"/>
+  <link rel="stylesheet" href="style.css?v=13"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
@@ -64,8 +64,8 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-slider" id="heroSlider" onclick="this.classList.toggle('active')">
-    <div class="hero-slides">
+  <div class="hero-slider" id="heroSlider">
+    <div class="hero-slides" id="heroSlides">
       <div class="hero-slide">
         <div class="hero-overlay"></div>
         <div class="hero-inner">
@@ -76,12 +76,19 @@
           </div>
         </div>
       </div>
-      <div class="hero-slide hero-slide-offer">
-        <img src="images/offer.jpeg?v=1" alt="15 Day Special Offer — 3 Piece Suitcase Set for Rs. 10,500"/>
+      <div class="hero-slide hero-slide-img">
+        <img src="images/Heroimg1.jpg?v=1" alt="Premium hardside luggage in four colours"/>
+      </div>
+      <div class="hero-slide hero-slide-img">
+        <img src="images/Herosection2.jpeg?v=1" alt="Crocodile 9-piece luggage room showcase"/>
       </div>
     </div>
-    <div class="hero-slider-hint">🎁 Hover for our special offer</div>
-    <div class="hero-slider-dots"><span class="dot active"></span><span class="dot"></span></div>
+    <div class="hero-nav-zone hero-nav-left" onmouseenter="heroPrevSlide()" onclick="heroPrevSlide()"></div>
+    <div class="hero-nav-zone hero-nav-right" onmouseenter="heroNextSlide()" onclick="heroNextSlide()"></div>
+    <div class="hero-slider-hint">🎁 Hover left / right to browse</div>
+    <div class="hero-slider-dots" id="heroDots">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+    </div>
   </div>
   <div class="hero-announce">
     <span>Grand Opening — Up to 50% Off Storewide</span>
@@ -308,6 +315,6 @@
 <!-- BACK TO TOP -->
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=8"></script>
+<script src="main.js?v=9"></script>
 </body>
 </html>
