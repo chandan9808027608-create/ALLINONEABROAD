@@ -125,10 +125,10 @@ let cart = JSON.parse(localStorage.getItem('aiaCart') || '[]');
 
 function saveCart() { localStorage.setItem('aiaCart', JSON.stringify(cart)); }
 
-function addToCart(product) {
+function addToCart(product, qty = 1) {
   const existing = cart.find(i => i.id === product.id);
-  if (existing) { existing.qty++; }
-  else { cart.push({ ...product, qty: 1 }); }
+  if (existing) { existing.qty += qty; }
+  else { cart.push({ ...product, qty }); }
   saveCart();
   updateCartUI();
   showToast(`✓ Added to cart: ${product.name}`);

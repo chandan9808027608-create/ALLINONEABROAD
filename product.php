@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=5"/>
+  <link rel="stylesheet" href="style.css?v=6"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -118,31 +118,45 @@ if ($product) {
     $colors = $product['colors'] ? array_filter(array_map('trim', explode('|', $product['colors']))) : [];
   ?>
 
+  <div class="pdp-breadcrumb">
+    <a href="index.html">Home</a>
+    <span>/</span>
+    <a href="shop.html?cat=<?= urlencode($product['category']) ?>"><?= htmlspecialchars(ucfirst($product['category'])) ?></a>
+    <span>/</span>
+    <span class="pdp-breadcrumb-current"><?= htmlspecialchars($product['name']) ?></span>
+  </div>
+
   <div class="pdp-layout">
     <div class="pdp-gallery-wrap">
       <?php if (count($galleryImages) > 1): ?>
       <div class="pdp-thumbs">
         <?php foreach ($galleryImages as $i => $img): ?>
-          <img src="<?= htmlspecialchars(imgUrl($img)) ?>" alt="" class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)" onerror="handleImgError(this)"/>
+          <div class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)">
+            <img src="<?= htmlspecialchars(imgUrl($img)) ?>" alt="" onerror="handleImgError(this)"/>
+          </div>
         <?php endforeach; ?>
       </div>
       <?php endif; ?>
       <div class="pdp-gallery">
+        <?php if ($off > 0): ?><span class="pdp-gallery-badge">-<?= (int)$off ?>% OFF</span><?php endif; ?>
         <img src="<?= htmlspecialchars(imgUrl($product['image'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
       </div>
     </div>
     <div class="pdp-info">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div class="pdp-meta-row">
         <div class="prod-cat" style="margin-bottom:0;"><?= htmlspecialchars(strtoupper($product['category'])) ?></div>
         <?php if ($pieceType === 'set'): ?>
           <span class="pdp-type-badge pdp-type-set">📦 Full Set</span>
         <?php elseif ($pieceType === 'single'): ?>
           <span class="pdp-type-badge pdp-type-single">🧳 Single Piece</span>
         <?php endif; ?>
+        <?php if (!$outOfStock && $stock <= 5): ?>
+          <span class="pdp-type-badge pdp-type-lowstock">🔥 Only <?= $stock ?> left</span>
+        <?php endif; ?>
       </div>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
         <h1 class="pdp-title"><?= htmlspecialchars($product['name']) ?></h1>
-        <button class="icon-btn" title="Wishlist" style="flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        <button class="icon-btn pdp-wish-btn" title="Wishlist" onclick="this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
       </div>
       <div class="prod-rating" style="justify-content:space-between;margin-bottom:14px;">
         <span>
@@ -150,22 +164,11 @@ if ($product) {
           <span class="review-ct"><?= $stars ?>/5 | <?= number_format($reviews) ?> Ratings and <?= number_format($reviews) ?> Reviews</span>
         </span>
         <?php if ($outOfStock): ?>
-          <span style="color:#6b7280;font-weight:700;font-size:13px;">Out of Stock</span>
+          <span class="pdp-stock-pill pdp-stock-out">● Out of Stock</span>
         <?php else: ?>
-          <span style="color:#16a34a;font-weight:700;font-size:13px;">In Stock</span>
+          <span class="pdp-stock-pill pdp-stock-in">● In Stock</span>
         <?php endif; ?>
       </div>
-
-      <?php if ($colors): ?>
-      <div class="form-group" style="margin-bottom:18px;">
-        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px;">Color:</label>
-        <select class="pdp-color-select">
-          <?php foreach ($colors as $color): ?>
-            <option><?= htmlspecialchars($color) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <?php endif; ?>
 
       <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
         <span class="pdp-price">Rs. <?= number_format($price, 2) ?></span>
@@ -177,6 +180,28 @@ if ($product) {
       <?php endif; ?>
       <?php if ($countryOfOrigin !== ''): ?>
         <div style="font-size:13px;color:var(--gray);margin:10px 0;">Country of Origin: <strong style="color:var(--dark);"><?= htmlspecialchars($countryOfOrigin) ?></strong></div>
+      <?php endif; ?>
+
+      <?php if ($colors): ?>
+      <div class="pdp-swatch-group">
+        <label class="pdp-swatch-label">Color: <span id="pdpSelectedColor"><?= htmlspecialchars($colors[array_key_first($colors)]) ?></span></label>
+        <div class="pdp-swatches">
+          <?php foreach ($colors as $i => $color): ?>
+            <button type="button" class="color-swatch<?= $i === 0 ? ' active' : '' ?>" style="background:<?= htmlspecialchars(colorToHex($color)) ?>" title="<?= htmlspecialchars($color) ?>" data-color="<?= htmlspecialchars($color) ?>" onclick="pdpSelectColor(this)"></button>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      <?php endif; ?>
+
+      <?php if (!$outOfStock): ?>
+      <div class="pdp-qty-row">
+        <label class="pdp-swatch-label">Quantity:</label>
+        <div class="qty-selector">
+          <button type="button" class="qty-btn" onclick="pdpChangeQty(-1)">−</button>
+          <input type="text" class="qty-input" id="pdpQty" value="1" readonly/>
+          <button type="button" class="qty-btn" onclick="pdpChangeQty(1)">+</button>
+        </div>
+      </div>
       <?php endif; ?>
 
       <div class="pdp-btns">
@@ -213,28 +238,26 @@ if ($product) {
   </div>
 
   <div class="section" style="padding-top:0;">
-    <div class="pdp-detail-cards">
+    <div class="pdp-tabs-wrap">
+      <div class="pdp-tabs">
+        <?php if ($features): ?><button type="button" class="pdp-tab-btn active" data-tab="features" onclick="pdpSwitchTab(this)">Key Features</button><?php endif; ?>
+        <button type="button" class="pdp-tab-btn<?= $features ? '' : ' active' ?>" data-tab="specs" onclick="pdpSwitchTab(this)">Specifications</button>
+      </div>
       <?php if ($features): ?>
-      <div class="detail-card">
-        <div class="detail-card-head">Key Features</div>
-        <div class="detail-card-body">
-          <ul class="detail-list">
-            <?php foreach ($features as $feature): ?>
-              <li><span class="detail-check">✓</span><?= htmlspecialchars($feature) ?></li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
+      <div class="pdp-tab-panel active" data-panel="features">
+        <ul class="detail-list detail-list-grid">
+          <?php foreach ($features as $feature): ?>
+            <li><span class="detail-check">✓</span><?= htmlspecialchars($feature) ?></li>
+          <?php endforeach; ?>
+        </ul>
       </div>
       <?php endif; ?>
-      <div class="detail-card">
-        <div class="detail-card-head">Specifications</div>
-        <div class="detail-card-body">
-          <table class="spec-table">
-            <?php foreach ($specs as $label => $value): ?>
-              <tr><td><?= htmlspecialchars($label) ?></td><td><?= htmlspecialchars($value) ?></td></tr>
-            <?php endforeach; ?>
-          </table>
-        </div>
+      <div class="pdp-tab-panel<?= $features ? '' : ' active' ?>" data-panel="specs">
+        <table class="spec-table">
+          <?php foreach ($specs as $label => $value): ?>
+            <tr><td><?= htmlspecialchars($label) ?></td><td><?= htmlspecialchars($value) ?></td></tr>
+          <?php endforeach; ?>
+        </table>
       </div>
     </div>
   </div>
@@ -244,13 +267,18 @@ if ($product) {
       const btn = document.getElementById('pdpAddBtn');
       if (btn) {
         btn.addEventListener('click', () => {
-          addToCart(<?= json_encode([
+          const qtyEl = document.getElementById('pdpQty');
+          const qty = qtyEl ? parseInt(qtyEl.value, 10) || 1 : 1;
+          const colorEl = document.getElementById('pdpSelectedColor');
+          const product = <?= json_encode([
             'id' => (int)$product['id'],
             'name' => $product['name'],
             'price' => $price,
             'img' => $product['image'],
             'cat' => $product['category'],
-          ], JSON_UNESCAPED_SLASHES) ?>);
+          ], JSON_UNESCAPED_SLASHES) ?>;
+          if (colorEl) product.name += ' (' + colorEl.textContent + ')';
+          addToCart(product, qty);
         });
       }
 
@@ -260,8 +288,30 @@ if ($product) {
       }
     });
 
+    function pdpSwitchTab(btn) {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.pdp-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pdp-tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.pdp-tab-panel[data-panel="${tab}"]`).classList.add('active');
+    }
+
+    function pdpSelectColor(btn) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      const label = document.getElementById('pdpSelectedColor');
+      if (label) label.textContent = btn.dataset.color;
+    }
+
+    function pdpChangeQty(delta) {
+      const input = document.getElementById('pdpQty');
+      if (!input) return;
+      const next = Math.max(1, (parseInt(input.value, 10) || 1) + delta);
+      input.value = next;
+    }
+
     function pdpSetImage(thumb) {
-      document.getElementById('pdpMainImage').src = thumb.src;
+      document.getElementById('pdpMainImage').src = thumb.querySelector('img').src;
       document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
     }
@@ -325,6 +375,6 @@ if ($product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=7"></script>
+<script src="main.js?v=8"></script>
 </body>
 </html>

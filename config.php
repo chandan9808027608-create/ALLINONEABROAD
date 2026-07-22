@@ -41,3 +41,19 @@ function imgUrl(string $path): string
     $sep = strpos($path, '?') !== false ? '&' : '?';
     return $path . $sep . 'v=' . IMG_ASSET_VERSION;
 }
+
+function colorToHex(string $name): string
+{
+    $map = [
+        'sky blue' => '#7ec8e3', 'ocean blue' => '#2563eb', 'navy' => '#1e3a5f',
+        'blue' => '#3b82f6', 'light green' => '#86efac', 'green' => '#16a34a',
+        'grey' => '#9ca3af', 'gray' => '#9ca3af', 'pink' => '#f9a8d4',
+        'purple' => '#a855f7', 'khaki' => '#c3b091', 'black' => '#111827',
+        'white' => '#f9fafb', 'red' => '#dc2626', 'orange' => '#f97316',
+        'yellow' => '#facc15', 'mint' => '#a7f3d0', 'beige' => '#e8dcc8',
+        'cream' => '#f5ead6', 'brown' => '#78350f', 'maroon' => '#7f1d1d',
+        'gold' => '#d4af37', 'silver' => '#c0c0c0',
+    ];
+    $key = strtolower(trim($name));
+    return $map[$key] ?? '#d1d5db';
+}
