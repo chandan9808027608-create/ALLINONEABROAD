@@ -13,7 +13,7 @@
   --white: #ffffff;
   --border: #e5e7eb;
   --green: #16a34a;
-  --header-h: 64px;
+  --header-h: 78px;
 }
 html { scroll-behavior: smooth; font-size: 16px; }
 body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--dark); background: var(--white); }
@@ -121,14 +121,14 @@ button { cursor: pointer; font-family: inherit; }
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 24px;
   height: var(--header-h);
   display: flex;
   align-items: center;
   gap: 20px;
 }
 .logo { display: flex; flex-direction: column; line-height: 1; flex-shrink: 0; }
-.logo-img { height: 38px; width: auto; display: block; }
+.logo-img { height: 58px; width: auto; display: block; margin-left: -10px; }
 .logo-top { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; color: var(--dark); text-transform: uppercase; }
 .logo-bottom { font-size: 20px; font-weight: 900; letter-spacing: 0.04em; color: var(--orange); }
 .search-form {
