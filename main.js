@@ -11,6 +11,15 @@ function handleImgError(img) {
   img.src = FALLBACK_IMG;
 }
 
+// Bump alongside IMG_ASSET_VERSION in config.php whenever product images are
+// re-uploaded, to bypass Hostinger's CDN caching a stale (e.g. 404) response.
+const IMG_ASSET_VERSION = 2;
+function imgUrl(path) {
+  if (!path) return path;
+  const sep = path.includes('?') ? '&' : '?';
+  return path + sep + 'v=' + IMG_ASSET_VERSION;
+}
+
 // ─── PRODUCT DATA (loaded from the database) ─
 let PRODUCTS = [];
 let productsLoadError = false;
@@ -165,7 +174,7 @@ function renderCartItems() {
   if (footer) footer.style.display = 'block';
   list.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <img src="${item.img}" alt="${item.name}" onerror="handleImgError(this)"/>
+      <img src="${imgUrl(item.img)}" alt="${item.name}" onerror="handleImgError(this)"/>
       <div class="ci-info">
         <div class="ci-name">${item.name}</div>
         <div class="ci-price">Rs. ${item.price.toLocaleString('en-IN')}</div>
@@ -233,7 +242,7 @@ function renderProductCard(p) {
   <div class="prod-card">
     <div class="prod-img-wrap">
       <a href="product.php?id=${p.id}">
-        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
+        <img src="${imgUrl(p.img)}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
       </a>
       <div class="prod-badges">
         ${off > 0 ? `<span class="badge badge-off">${off}% OFF</span>` : ''}

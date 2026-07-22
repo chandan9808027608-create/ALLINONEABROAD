@@ -28,3 +28,16 @@ function connectDb(): mysqli
     $conn->set_charset('utf8mb4');
     return $conn;
 }
+
+// Bump this whenever product images are re-uploaded, to bypass Hostinger's
+// CDN caching a stale response (e.g. a 404 from before an image was uploaded).
+const IMG_ASSET_VERSION = 2;
+
+function imgUrl(string $path): string
+{
+    if ($path === '') {
+        return $path;
+    }
+    $sep = strpos($path, '?') !== false ? '&' : '?';
+    return $path . $sep . 'v=' . IMG_ASSET_VERSION;
+}

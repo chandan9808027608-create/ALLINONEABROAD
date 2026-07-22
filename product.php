@@ -123,12 +123,12 @@ if ($product) {
       <?php if (count($galleryImages) > 1): ?>
       <div class="pdp-thumbs">
         <?php foreach ($galleryImages as $i => $img): ?>
-          <img src="<?= htmlspecialchars($img) ?>" alt="" class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)" onerror="handleImgError(this)"/>
+          <img src="<?= htmlspecialchars(imgUrl($img)) ?>" alt="" class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)" onerror="handleImgError(this)"/>
         <?php endforeach; ?>
       </div>
       <?php endif; ?>
       <div class="pdp-gallery">
-        <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
+        <img src="<?= htmlspecialchars(imgUrl($product['image'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
       </div>
     </div>
     <div class="pdp-info">
@@ -325,6 +325,6 @@ if ($product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=6"></script>
+<script src="main.js?v=7"></script>
 </body>
 </html>

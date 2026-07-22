@@ -434,7 +434,7 @@ if ($result) {
               <tr>
                 <td>
                   <div class="prod-name-cell">
-                    <img class="prod-thumb" src="<?= htmlspecialchars($p['image']) ?>" alt="" onerror="this.style.visibility='hidden'"/>
+                    <img class="prod-thumb" src="<?= htmlspecialchars(imgUrl($p['image'])) ?>" alt="" onerror="this.style.visibility='hidden'"/>
                     <span><?= htmlspecialchars($p['name']) ?></span>
                   </div>
                 </td>
