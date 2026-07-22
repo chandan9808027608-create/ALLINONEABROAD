@@ -128,6 +128,7 @@ button { cursor: pointer; font-family: inherit; }
   gap: 20px;
 }
 .logo { display: flex; flex-direction: column; line-height: 1; flex-shrink: 0; }
+.logo-img { height: 38px; width: auto; display: block; }
 .logo-top { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; color: var(--dark); text-transform: uppercase; }
 .logo-bottom { font-size: 20px; font-weight: 900; letter-spacing: 0.04em; color: var(--orange); }
 .search-form {

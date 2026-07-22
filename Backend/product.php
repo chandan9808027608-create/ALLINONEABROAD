@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=8"/>
+  <link rel="stylesheet" href="style.css?v=9"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -53,7 +53,7 @@ if ($product) {
 
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
-    <a href="index.html" class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></a>
+    <a href="index.html" class="logo"><img src="allinonelogo.png?v=1" alt="ALL IN ONE ABROAD" class="logo-img"/></a>
     <form class="search-form" onsubmit="return false;">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" placeholder="Search luggage, cookers, tiffins…" id="searchInput"/>
