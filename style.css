@@ -514,6 +514,12 @@ button { cursor: pointer; font-family: inherit; }
 .pdp-trust-title { font-weight: 700; color: var(--dark); }
 .pdp-trust-sub { color: var(--gray); font-size: 12px; }
 .pdp-shipping-box { border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-top: 16px; }
+.pdp-type-badge { font-size: 11px; font-weight: 800; letter-spacing: 0.02em; padding: 3px 10px; border-radius: 100px; }
+.pdp-type-set { background: #ede9fe; color: #6d28d9; }
+.pdp-type-single { background: #e0f2fe; color: #0369a1; }
+.type-tag { font-weight: 800; letter-spacing: 0.02em; }
+.type-tag-set { color: #6d28d9; }
+.type-tag-single { color: #0369a1; }
 
 .pdp-detail-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 .detail-card { border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; background: #fff; }

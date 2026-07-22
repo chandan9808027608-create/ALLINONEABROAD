@@ -243,7 +243,7 @@ function renderProductCard(p) {
       <button class="wish-btn ${inWish ? 'active' : ''}" data-wish="${p.id}" onclick="toggleWish(${p.id})" title="Wishlist">${inWish ? '♥' : '♡'}</button>
     </div>
     <div class="prod-body">
-      <div class="prod-cat">${p.cat.toUpperCase()}</div>
+      <div class="prod-cat">${p.cat.toUpperCase()}${p.pieceType === 'set' ? ' · <span class="type-tag type-tag-set">FULL SET</span>' : p.pieceType === 'single' ? ' · <span class="type-tag type-tag-single">SINGLE PIECE</span>' : ''}</div>
       <a href="product.php?id=${p.id}" style="color:inherit;text-decoration:none;"><div class="prod-name">${p.name}</div></a>
       <div class="prod-sub">${p.sub || ''}</div>
       <div class="prod-rating">

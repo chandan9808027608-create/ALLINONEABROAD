@@ -61,6 +61,9 @@ try {
     if (!$columnExists($conn, 'products', 'country_of_origin')) {
         $conn->query('ALTER TABLE products ADD COLUMN country_of_origin VARCHAR(100) NULL AFTER colors');
     }
+    if (!$columnExists($conn, 'products', 'piece_type')) {
+        $conn->query("ALTER TABLE products ADD COLUMN piece_type VARCHAR(10) NULL AFTER country_of_origin");
+    }
 
     $conn->query("
         CREATE TABLE IF NOT EXISTS banner_messages (

@@ -69,7 +69,7 @@ try {
     }
 
     if ($action === 'products') {
-        $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews FROM products ORDER BY id ASC');
+        $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews, piece_type FROM products ORDER BY id ASC');
         $products = [];
         while ($row = $result->fetch_assoc()) {
             $products[] = [
@@ -84,6 +84,7 @@ try {
                 'stock' => (int)$row['stock'],
                 'stars' => (int)$row['rating'],
                 'reviews' => (int)$row['reviews'],
+                'pieceType' => $row['piece_type'],
             ];
         }
         sendJson(['success' => true, 'products' => $products]);

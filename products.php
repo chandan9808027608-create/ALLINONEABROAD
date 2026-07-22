@@ -11,6 +11,21 @@ if (empty($_SESSION['orders_admin'])) {
 $conn = connectDb();
 $results = null;
 
+function resolveImagePath(string $path): string
+{
+    $path = trim($path);
+    if ($path === '' || preg_match('#^https?://#i', $path)) {
+        return $path;
+    }
+    return 'images/products/' . ltrim($path, '/');
+}
+
+function resolveImageList(string $pipeSeparated): string
+{
+    $parts = array_filter(array_map('trim', explode('|', $pipeSeparated)));
+    return implode('|', array_map('resolveImagePath', $parts));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'delete') {
     $id = (int)($_POST['id'] ?? 0);
     if ($id > 0) {
@@ -48,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
     $images = trim((string)($_POST['images'] ?? ''));
     $colors = trim((string)($_POST['colors'] ?? ''));
     $countryOfOrigin = trim((string)($_POST['country_of_origin'] ?? ''));
+    $pieceType = trim((string)($_POST['piece_type'] ?? ''));
+    $pieceType = in_array($pieceType, ['set', 'single'], true) ? $pieceType : null;
 
     $error = null;
     if ($name === '') {
@@ -92,8 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
             $error = 'Could not save the uploaded image. Check that images/products/ is writable.';
         } else {
             $image = 'images/products/' . $filename;
-            $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-            $stmt->bind_param('ssddissssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $description, $badge, $rating, $reviews);
+            $images = resolveImageList($images);
+            $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, piece_type, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            $stmt->bind_param('ssddisssssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $pieceType, $description, $badge, $rating, $reviews);
             if (!$stmt->execute()) {
                 $error = 'Database error while saving the product.';
                 @unlink($destPath);
@@ -155,15 +173,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $images = trim((string)($data['images'] ?? ''));
                         $colors = trim((string)($data['colors'] ?? ''));
                         $countryOfOrigin = trim((string)($data['country_of_origin'] ?? ''));
+                        $pieceType = strtolower(trim((string)($data['piece_type'] ?? '')));
+                        $pieceType = in_array($pieceType, ['set', 'single'], true) ? $pieceType : null;
 
                         if ($name === '' || !in_array($category, $allowedCategories, true) || $price === null || $price <= 0 || $stock === null || $stock < 0 || $image === '') {
                             $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen), price, stock, and image.";
                             continue;
                         }
 
-                        if (!preg_match('#^https?://#i', $image)) {
-                            $image = 'images/products/' . ltrim($image, '/');
-                        }
+                        $image = resolveImagePath($image);
+                        $images = resolveImageList($images);
 
                         $stmt = $conn->prepare('SELECT id FROM products WHERE name = ? LIMIT 1');
                         $stmt->bind_param('s', $name);
@@ -172,9 +191,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $exists = $stmt->num_rows > 0;
                         $stmt->close();
 
-                        $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
-                            ON DUPLICATE KEY UPDATE category=VALUES(category), price=VALUES(price), original_price=VALUES(original_price), stock=VALUES(stock), image=VALUES(image), images=VALUES(images), colors=VALUES(colors), country_of_origin=VALUES(country_of_origin), description=VALUES(description), badge=VALUES(badge), rating=VALUES(rating), reviews=VALUES(reviews)');
-                        $stmt->bind_param('ssddissssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $description, $badge, $rating, $reviews);
+                        $stmt = $conn->prepare('INSERT INTO products (name, category, price, original_price, stock, image, images, colors, country_of_origin, piece_type, description, badge, rating, reviews) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                            ON DUPLICATE KEY UPDATE category=VALUES(category), price=VALUES(price), original_price=VALUES(original_price), stock=VALUES(stock), image=VALUES(image), images=VALUES(images), colors=VALUES(colors), country_of_origin=VALUES(country_of_origin), piece_type=VALUES(piece_type), description=VALUES(description), badge=VALUES(badge), rating=VALUES(rating), reviews=VALUES(reviews)');
+                        $stmt->bind_param('ssddisssssssii', $name, $category, $price, $origPrice, $stock, $image, $images, $colors, $countryOfOrigin, $pieceType, $description, $badge, $rating, $reviews);
                         if ($stmt->execute()) {
                             $exists ? $results['updated']++ : $results['added']++;
                         } else {
@@ -190,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
 }
 
 $products = [];
-$result = $conn->query('SELECT id, name, category, price, original_price, stock, image FROM products ORDER BY name ASC');
+$result = $conn->query('SELECT id, name, category, price, original_price, stock, image, piece_type FROM products ORDER BY name ASC');
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $products[] = $row;
@@ -268,6 +287,10 @@ if ($result) {
     .stock-ok { background: #dcfce7; color: #16a34a; }
     .stock-low { background: #fef3c7; color: #b45309; }
     .stock-out { background: #fee2e2; color: #dc2626; }
+    .type-pill { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 100px; }
+    .type-set { background: #ede9fe; color: #6d28d9; }
+    .type-single { background: #e0f2fe; color: #0369a1; }
+    .type-none { color: #9ca3af; font-size: 12px; }
 
     .empty { text-align: center; padding: 48px 24px; color: #6b7280; font-size: 13px; }
 
@@ -318,7 +341,7 @@ if ($result) {
         <div class="help-text">
           Upload a <code>.csv</code> file (export from Excel or Google Sheets as CSV — not <code>.xlsx</code>).<br/>
           Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code> or <code>kitchen</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
-          Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>, <code>images</code> (extra gallery photos), <code>colors</code>, <code>country_of_origin</code>.<br/>
+          Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>, <code>images</code> (extra gallery photos), <code>colors</code>, <code>country_of_origin</code>, <code>piece_type</code> (<code>set</code> or <code>single</code> — shown clearly to customers on the product page).<br/>
           For <code>image</code> and <code>images</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL. For <code>images</code> (extra gallery photos) and <code>colors</code>, separate multiple values with <code>|</code> (pipe), e.g. <code>photo2.jpg|photo3.jpg</code> or <code>Mint|Ocean Blue|Black</code>.<br/>
           Re-uploading a spreadsheet updates existing products that match by name, and adds any new ones — nothing is deleted automatically.
         </div>
@@ -357,6 +380,14 @@ if ($result) {
             <div class="form-group"><label>Rating (1–5, optional)</label><input type="number" name="rating" min="1" max="5" step="1" value="5"/></div>
             <div class="form-group"><label>Reviews Count (optional)</label><input type="number" name="reviews" min="0" step="1" value="0"/></div>
           </div>
+          <div class="form-group">
+            <label>Piece Type</label>
+            <select name="piece_type">
+              <option value="">Not specified</option>
+              <option value="single">Single Piece</option>
+              <option value="set">Full Set</option>
+            </select>
+          </div>
           <div class="form-group"><label>Description (optional)</label><textarea name="description" maxlength="255"></textarea></div>
           <div class="form-group"><label>Product Image * (JPG, PNG, WEBP, or GIF — max 5MB)</label><input type="file" name="imageFile" accept=".jpg,.jpeg,.png,.webp,.gif" required/></div>
           <div class="form-grid">
@@ -380,7 +411,7 @@ if ($result) {
         <?php endif; ?>
       </div>
       <?php if (empty($products)): ?>
-        <div class="empty">No products yet. Upload a spreadsheet above to add your first items — or start from <a href="products_seed.csv" download>the current live catalog as a CSV</a> to seed it in one click.</div>
+        <div class="empty">No products yet. Upload a spreadsheet above to add your first items — see the <a href="products_template.csv" download>CSV template</a> for the expected format.</div>
       <?php else: ?>
       <div class="table-scroll">
         <table>
@@ -388,6 +419,7 @@ if ($result) {
             <tr>
               <th>Product</th>
               <th>Category</th>
+              <th>Type</th>
               <th>Price</th>
               <th>Stock</th>
               <th></th>
@@ -407,6 +439,15 @@ if ($result) {
                   </div>
                 </td>
                 <td><span class="cat-pill"><?= htmlspecialchars($p['category']) ?></span></td>
+                <td>
+                  <?php if ($p['piece_type'] === 'set'): ?>
+                    <span class="type-pill type-set">Full Set</span>
+                  <?php elseif ($p['piece_type'] === 'single'): ?>
+                    <span class="type-pill type-single">Single Piece</span>
+                  <?php else: ?>
+                    <span class="type-none">—</span>
+                  <?php endif; ?>
+                </td>
                 <td>Rs. <?= number_format((float)$p['price'], 2) ?><?php if ($p['original_price']): ?> <span style="color:#9ca3af;text-decoration:line-through;font-size:12px;">Rs. <?= number_format((float)$p['original_price'], 2) ?></span><?php endif; ?></td>
                 <td><span class="stock-pill <?= $stockClass ?>"><?= $stock ?> in stock</span></td>
                 <td>

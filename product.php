@@ -6,7 +6,7 @@ $id = (int)($_GET['id'] ?? 0);
 $product = null;
 
 if ($id > 0) {
-    $stmt = $conn->prepare('SELECT id, name, category, price, original_price, stock, image, images, colors, country_of_origin, description, badge, rating, reviews FROM products WHERE id = ? LIMIT 1');
+    $stmt = $conn->prepare('SELECT id, name, category, price, original_price, stock, image, images, colors, country_of_origin, piece_type, description, badge, rating, reviews FROM products WHERE id = ? LIMIT 1');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=4"/>
+  <link rel="stylesheet" href="style.css?v=5"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -97,12 +97,18 @@ if ($product) {
     $reviews = (int)$product['reviews'];
     $features = $product['description'] ? array_filter(array_map('trim', explode(',', $product['description']))) : [];
     $countryOfOrigin = trim((string)($product['country_of_origin'] ?? ''));
+    $pieceType = $product['piece_type'] ?? '';
     $specs = [
       'Category'     => ucfirst($product['category']),
       'Price'        => 'Rs. ' . number_format($price, 2),
       'Availability' => $outOfStock ? 'Out of stock' : ($stock <= 5 ? "Only {$stock} left" : 'In stock'),
       'Rating'       => $stars > 0 ? "{$stars} / 5 ({$reviews} reviews)" : 'Not yet rated',
     ];
+    if ($pieceType === 'set') {
+      $specs['Type'] = 'Full Set';
+    } elseif ($pieceType === 'single') {
+      $specs['Type'] = 'Single Piece';
+    }
     if ($countryOfOrigin !== '') {
       $specs['Country of Origin'] = $countryOfOrigin;
     }
@@ -126,7 +132,14 @@ if ($product) {
       </div>
     </div>
     <div class="pdp-info">
-      <div class="prod-cat"><?= htmlspecialchars(strtoupper($product['category'])) ?></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div class="prod-cat" style="margin-bottom:0;"><?= htmlspecialchars(strtoupper($product['category'])) ?></div>
+        <?php if ($pieceType === 'set'): ?>
+          <span class="pdp-type-badge pdp-type-set">📦 Full Set</span>
+        <?php elseif ($pieceType === 'single'): ?>
+          <span class="pdp-type-badge pdp-type-single">🧳 Single Piece</span>
+        <?php endif; ?>
+      </div>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
         <h1 class="pdp-title"><?= htmlspecialchars($product['name']) ?></h1>
         <button class="icon-btn" title="Wishlist" style="flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
