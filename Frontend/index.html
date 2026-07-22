@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="All In One Abroad — Trolley bags and cooking essentials for Indian students and professionals going abroad."/>
   <title>ALL IN ONE ABROAD — Luggage & Kitchen</title>
-  <link rel="stylesheet" href="style.css?v=11"/>
+  <link rel="stylesheet" href="style.css?v=12"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
@@ -64,13 +64,24 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-overlay"></div>
-  <div class="hero-inner">
-    <div class="hero-left">
-      <h1 class="hero-title">Going abroad? We<br>pack it <em>all</em> for you.</h1>
-      <p class="hero-sub">Trolley bags &amp; cooking essentials —<br>everything you need before flying out.</p>
-      <a href="shop.html" class="btn-orange">SHOP NOW</a>
+  <div class="hero-slider" id="heroSlider" onclick="this.classList.toggle('active')">
+    <div class="hero-slides">
+      <div class="hero-slide">
+        <div class="hero-overlay"></div>
+        <div class="hero-inner">
+          <div class="hero-left">
+            <h1 class="hero-title">Going abroad? We<br>pack it <em>all</em> for you.</h1>
+            <p class="hero-sub">Trolley bags &amp; cooking essentials —<br>everything you need before flying out.</p>
+            <a href="shop.html" class="btn-orange">SHOP NOW</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-slide hero-slide-offer">
+        <img src="images/offer.jpeg?v=1" alt="15 Day Special Offer — 3 Piece Suitcase Set for Rs. 10,500"/>
+      </div>
     </div>
+    <div class="hero-slider-hint">🎁 Hover for our special offer</div>
+    <div class="hero-slider-dots"><span class="dot active"></span><span class="dot"></span></div>
   </div>
   <div class="hero-announce">
     <span>Grand Opening — Up to 50% Off Storewide</span>
