@@ -104,19 +104,6 @@ button { cursor: pointer; font-family: inherit; }
 .hero-card-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
 .hero-card-sub { font-size: 12px; color: var(--gray); margin-bottom: 6px; }
 .hero-card-link { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 0.05em; }
-.hero-announce {
-  position: relative;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(8px);
-  color: rgba(255,255,255,0.85);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 10px 32px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-.hero-announce .sep { opacity: 0.4; }
 
 /* HEADER */
 .site-header {
