@@ -34,7 +34,11 @@ if ($product) {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><?= $product ? htmlspecialchars($product['name']) . ' — ALL IN ONE ABROAD' : 'Product Not Found — ALL IN ONE ABROAD' ?></title>
+  <title>ALL IN ONE ABROAD</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=1"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=1"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=1"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1"/>
   <?php if ($product): ?>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="ALL IN ONE ABROAD"/>
@@ -44,7 +48,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=14"/>
+  <link rel="stylesheet" href="style.css?v=15"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -61,6 +65,7 @@ if ($product) {
     <nav class="main-nav">
       <a href="shop.html?cat=luggage" data-cat="luggage">Luggage</a>
       <a href="shop.html?cat=kitchen" data-cat="kitchen">Kitchen</a>
+      <a href="shop.html?cat=appliances" data-cat="appliances">Home Appliances</a>
       <a href="shop.html" data-cat="all">All Products</a>
     </nav>
     <div class="header-actions">
@@ -72,6 +77,7 @@ if ($product) {
   </div>
   <div class="mobile-nav" id="mobileNav">
     <a href="shop.html?cat=luggage">Luggage</a><a href="shop.html?cat=kitchen">Kitchen</a>
+    <a href="shop.html?cat=appliances">Home Appliances</a>
     <a href="shop.html">All Products</a><a href="login.html">Sign In</a>
   </div>
 </header>
@@ -375,6 +381,6 @@ if ($product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=10"></script>
+<script src="main.js?v=11"></script>
 </body>
 </html>

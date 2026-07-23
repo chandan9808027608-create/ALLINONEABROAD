@@ -4,8 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="All In One Abroad — Trolley bags and cooking essentials for Indian students and professionals going abroad."/>
-  <title>ALL IN ONE ABROAD — Luggage & Kitchen</title>
-  <link rel="stylesheet" href="style.css?v=14"/>
+  <title>ALL IN ONE ABROAD</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=1"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=1"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=1"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1"/>
+  <link rel="stylesheet" href="style.css?v=15"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
@@ -38,6 +42,7 @@
     <nav class="main-nav">
       <a href="shop.html?cat=luggage">Luggage</a>
       <a href="shop.html?cat=kitchen">Kitchen</a>
+      <a href="shop.html?cat=appliances">Home Appliances</a>
       <a href="shop.html">All Products</a>
     </nav>
     <div class="header-actions">
@@ -57,6 +62,7 @@
   <div class="mobile-nav" id="mobileNav">
     <a href="shop.html?cat=luggage">Luggage</a>
     <a href="shop.html?cat=kitchen">Kitchen</a>
+    <a href="shop.html?cat=appliances">Home Appliances</a>
     <a href="shop.html">All Products</a>
     <a href="login.html">Sign In</a>
   </div>
@@ -129,10 +135,10 @@
 <!-- CATEGORIES -->
 <section class="section cat-section">
   <div class="container">
-    <h2 class="section-title center">Everything you need, in two collections</h2>
+    <h2 class="section-title center">Everything you need, in three collections</h2>
     <div class="cat-grid">
       <a href="shop.html?cat=luggage" class="cat-card">
-        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80" alt="Luggage" onerror="handleImgError(this)"/>
+        <img src="images/luggages.webp?v=1" alt="Luggage" onerror="handleImgError(this)"/>
         <div class="cat-overlay"></div>
         <div class="cat-info">
           <div class="cat-sub">Trolleys, Backpacks, Sets</div>
@@ -141,11 +147,20 @@
         </div>
       </a>
       <a href="shop.html?cat=kitchen" class="cat-card">
-        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Kitchen" onerror="handleImgError(this)"/>
+        <img src="images/KitchenEssentials.jpg?v=1" alt="Kitchen" onerror="handleImgError(this)"/>
         <div class="cat-overlay"></div>
         <div class="cat-info">
           <div class="cat-sub">Cookers, Utensils, Tiffins</div>
           <div class="cat-name">Kitchen Essentials</div>
+          <span class="cat-btn">EXPLORE</span>
+        </div>
+      </a>
+      <a href="shop.html?cat=appliances" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=600&q=80" alt="Home Appliances" onerror="handleImgError(this)"/>
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <div class="cat-sub">Small Appliances, Gadgets</div>
+          <div class="cat-name">Home Appliances</div>
           <span class="cat-btn">EXPLORE</span>
         </div>
       </a>
@@ -169,17 +184,17 @@
   <div class="container">
     <div class="deal-inner">
       <div class="deal-content">
-        <div class="deal-label">DEAL OF THE DAY</div>
-        <h2 class="deal-title">Hardside Luggage Set — 3 Pcs</h2>
+        <div class="deal-label">IN-STORE EXCLUSIVE OFFER</div>
+        <h2 class="deal-title">Grelac 3-Piece Luggage Set</h2>
         <div class="deal-prices">
-          <span class="deal-price">Rs. 5,499</span>
-          <span class="deal-original">Rs.10,999</span>
+          <span class="deal-price">Rs. 10,500</span>
+          <span class="deal-original">Rs. 13,000</span>
         </div>
-        <div class="deal-saving">You save Rs. 5,500 (50% off)</div>
-        <button class="btn-orange" onclick="addToCart({name:'Hardside Luggage Set — 3 Pcs',price:5499,cat:'luggage',img:'https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=200&q=80'})">GRAB THIS DEAL</button>
+        <div class="deal-saving">Save Rs. 2,500 — available only on a store visit</div>
+        <a href="contact.html" class="btn-orange">VISIT OUR STORE</a>
       </div>
       <div class="deal-img-wrap">
-        <img src="https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=500&q=80" alt="Luggage Set" onerror="handleImgError(this)"/>
+        <img src="images/products/Grelac1.png?v=1" alt="Grelac 3-Piece Luggage Set" onerror="handleImgError(this)"/>
       </div>
     </div>
   </div>
@@ -268,7 +283,7 @@
           <a href="https://www.tiktok.com/@bags_luggage_ktm" title="TikTok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82c-.99-.86-1.62-2.1-1.7-3.5h-3.05v13.9c0 1.65-1.35 3-3 3s-3-1.35-3-3 1.35-3 3-3c.28 0 .55.04.8.11V9.94a6.14 6.14 0 0 0-.8-.05c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V9.01a9.16 9.16 0 0 0 4.75 1.33V7.29a5.86 5.86 0 0 1-2.99-1.47z"/></svg></a>
         </div>
       </div>
-      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li></ul></div>
+      <div class="footer-col"><h4>SHOP</h4><ul><li><a href="shop.html?cat=luggage">Luggage</a></li><li><a href="shop.html?cat=kitchen">Kitchen</a></li><li><a href="shop.html?cat=appliances">Home Appliances</a></li></ul></div>
       <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="contact.html">Contact</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
       <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
       <div class="footer-col"><h4>CONTACT</h4><ul><li style="color:rgba(255,255,255,0.6);">+977 9809497026</li><li style="color:rgba(255,255,255,0.6);">luvkushgupta37@gmail.com</li><li style="color:rgba(255,255,255,0.6);">Jorpati Chamunda Gate (Opp. Prabhu Bank), Kathmandu</li></ul></div>
@@ -314,6 +329,6 @@
 <!-- BACK TO TOP -->
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=10"></script>
+<script src="main.js?v=11"></script>
 </body>
 </html>

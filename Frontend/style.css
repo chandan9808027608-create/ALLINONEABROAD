@@ -240,7 +240,7 @@ button { cursor: pointer; font-family: inherit; }
 
 /* CATEGORIES */
 .cat-section .container { max-width: 1440px; }
-.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .cat-card {
   position: relative; border-radius: 16px; overflow: hidden;
   aspect-ratio: 16/9; display: block; cursor: pointer;
@@ -585,6 +585,7 @@ button { cursor: pointer; font-family: inherit; }
   .prod-grid { grid-template-columns: repeat(3, 1fr); }
   .shop-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-top { grid-template-columns: 1fr 1fr; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
   .hero-inner { padding: 48px 24px 36px; }

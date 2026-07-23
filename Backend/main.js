@@ -297,7 +297,8 @@ function renderShop() {
   const catMap = {
     luggage: { t: 'Luggage & Bags', d: 'Trolleys, backpacks & sets built for international travel.' },
     kitchen: { t: 'Kitchen Essentials', d: 'Pressure cookers, induction cooktops, tiffins & masala dabbas.' },
-    all:     { t: 'All Products', d: 'Everything you need — luggage and kitchen.' },
+    appliances: { t: 'Home Appliances', d: 'Small appliances and gadgets for your new home abroad.' },
+    all:     { t: 'All Products', d: 'Everything you need — luggage, kitchen and home appliances.' },
   };
   if (titleEl) titleEl.textContent = q ? `Search results for "${q}"` : (catMap[cat]?.t || 'All Products');
   if (descEl) descEl.textContent = catMap[cat]?.d || '';

@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'c
 $addResult = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'add_product') {
-    $allowedCategories = ['luggage', 'kitchen'];
+    $allowedCategories = ['luggage', 'kitchen', 'appliances'];
     $allowedExt = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
     $maxBytes = 5 * 1024 * 1024;
 
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
     if ($name === '') {
         $error = 'Product name is required.';
     } elseif (!in_array($category, $allowedCategories, true)) {
-        $error = 'Category must be luggage or kitchen.';
+        $error = 'Category must be luggage, kitchen, or appliances.';
     } elseif ($price === null || $price <= 0) {
         $error = 'Price must be a positive number.';
     } elseif ($stock === null || $stock < 0) {
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['formAction'] ?? '') === 'a
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
     $results = ['added' => 0, 'updated' => 0, 'errors' => []];
     $file = $_FILES['stockFile'];
-    $allowedCategories = ['luggage', 'kitchen'];
+    $allowedCategories = ['luggage', 'kitchen', 'appliances'];
 
     if ($file['error'] !== UPLOAD_ERR_OK) {
         $results['errors'][] = 'Upload failed. Please choose a file and try again.';
@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['stockFile'])) {
                         $pieceType = in_array($pieceType, ['set', 'single'], true) ? $pieceType : null;
 
                         if ($name === '' || !in_array($category, $allowedCategories, true) || $price === null || $price <= 0 || $stock === null || $stock < 0 || $image === '') {
-                            $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen), price, stock, and image.";
+                            $results['errors'][] = "Row $rowNum ($name): invalid or missing value — check name, category (luggage/kitchen/appliances), price, stock, and image.";
                             continue;
                         }
 
@@ -340,7 +340,7 @@ if ($result) {
 
         <div class="help-text">
           Upload a <code>.csv</code> file (export from Excel or Google Sheets as CSV — not <code>.xlsx</code>).<br/>
-          Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code> or <code>kitchen</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
+          Required columns: <code>name</code>, <code>category</code> (must be <code>luggage</code>, <code>kitchen</code>, or <code>appliances</code>), <code>price</code>, <code>stock</code>, <code>image</code>.<br/>
           Optional columns: <code>original_price</code> (for showing a discount), <code>description</code>, <code>badge</code> (e.g. "Best Seller"), <code>rating</code> (1–5), <code>reviews</code>, <code>images</code> (extra gallery photos), <code>colors</code>, <code>country_of_origin</code>, <code>piece_type</code> (<code>set</code> or <code>single</code> — shown clearly to customers on the product page).<br/>
           For <code>image</code> and <code>images</code>, use either a filename already uploaded to <code>images/products/</code> (e.g. <code>my-photo.jpg</code>) or a full <code>https://</code> image URL. For <code>images</code> (extra gallery photos) and <code>colors</code>, separate multiple values with <code>|</code> (pipe), e.g. <code>photo2.jpg|photo3.jpg</code> or <code>Mint|Ocean Blue|Black</code>.<br/>
           Re-uploading a spreadsheet updates existing products that match by name, and adds any new ones — nothing is deleted automatically.
@@ -371,6 +371,7 @@ if ($result) {
                 <option value="">Select…</option>
                 <option value="luggage">Luggage</option>
                 <option value="kitchen">Kitchen</option>
+                <option value="appliances">Home Appliances</option>
               </select>
             </div>
             <div class="form-group"><label>Price (Rs.) *</label><input type="number" name="price" min="0.01" step="0.01" required/></div>
