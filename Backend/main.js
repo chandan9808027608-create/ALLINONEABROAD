@@ -323,8 +323,9 @@ window.addEventListener('scroll', () => {
   if (h) h.style.boxShadow = window.scrollY > 10 ? '0 2px 16px rgba(0,0,0,0.1)' : '';
 });
 
-// ─── HERO SLIDER (hover left/right to browse) ─
+// ─── HERO SLIDER (auto-rotating) ─────────────
 let heroSlideIndex = 0;
+let heroAutoTimer = null;
 function setHeroSlide(i) {
   const slides = document.getElementById('heroSlides');
   const dots = document.querySelectorAll('#heroDots .dot');
@@ -335,10 +336,16 @@ function setHeroSlide(i) {
   dots.forEach((d, idx) => d.classList.toggle('active', idx === heroSlideIndex));
 }
 function heroNextSlide() { setHeroSlide(heroSlideIndex + 1); }
-function heroPrevSlide() { setHeroSlide(heroSlideIndex - 1); }
+function heroStartAuto() {
+  clearInterval(heroAutoTimer);
+  heroAutoTimer = setInterval(heroNextSlide, 4500);
+}
 document.addEventListener('DOMContentLoaded', () => {
   const slider = document.getElementById('heroSlider');
-  if (slider) slider.addEventListener('mouseleave', () => setHeroSlide(0));
+  if (!slider) return;
+  heroStartAuto();
+  slider.addEventListener('mouseenter', () => clearInterval(heroAutoTimer));
+  slider.addEventListener('mouseleave', heroStartAuto);
 });
 
 // ─── SEARCH (basic) ──────────────────────────

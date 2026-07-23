@@ -44,7 +44,7 @@ if ($product) {
   <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>"/>
   <?php endif; ?>
-  <link rel="stylesheet" href="style.css?v=13"/>
+  <link rel="stylesheet" href="style.css?v=14"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -375,6 +375,6 @@ if ($product) {
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script src="main.js?v=9"></script>
+<script src="main.js?v=10"></script>
 </body>
 </html>
