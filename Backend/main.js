@@ -338,7 +338,7 @@ function setHeroSlide(i) {
 function heroNextSlide() { setHeroSlide(heroSlideIndex + 1); }
 function heroStartAuto() {
   clearInterval(heroAutoTimer);
-  heroAutoTimer = setInterval(heroNextSlide, 4500);
+  heroAutoTimer = setInterval(heroNextSlide, 2000);
 }
 document.addEventListener('DOMContentLoaded', () => {
   const slider = document.getElementById('heroSlider');
