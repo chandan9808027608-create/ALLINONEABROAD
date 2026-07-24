@@ -580,10 +580,31 @@ button { cursor: pointer; font-family: inherit; }
   .hero-right { display: none; }
   .trust-bar { padding: 16px 20px; }
   .trust-inner { grid-template-columns: repeat(2, 1fr); }
-  .cat-grid { grid-template-columns: 1fr; }
-  .cat-card { aspect-ratio: 16/9; }
-  .prod-grid { grid-template-columns: repeat(2, 1fr); }
-  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  /* CATEGORY TILES: compact square tiles instead of full-width photo banners */
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cat-card { aspect-ratio: 1; border-radius: 12px; }
+  .cat-info { padding: 10px 8px; }
+  .cat-sub { display: none; }
+  .cat-name { font-size: 12.5px; margin-bottom: 0; line-height: 1.25; }
+  .cat-btn { display: none; }
+
+  /* BEST-SELLERS ROW: horizontally swipeable cards instead of a stacked column */
+  .prod-grid {
+    display: flex; grid-template-columns: none; overflow-x: auto; gap: 12px;
+    padding-bottom: 10px; margin-bottom: -10px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .prod-grid::-webkit-scrollbar { display: none; }
+  .prod-grid .prod-card { flex: 0 0 62%; scroll-snap-align: start; }
+
+  /* SHOP LISTING: stays a dense 2-column grid instead of collapsing to 1 */
+  .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .prod-body { padding: 10px; }
+  .prod-name { font-size: 13px; }
+  .prod-sub { display: none; }
+  .prod-price { font-size: 16px; }
+  .add-cart-btn { padding: 8px; font-size: 11px; }
+
   .deal-inner { grid-template-columns: 1fr; }
   .deal-img-wrap { order: -1; }
   .combo-inner { flex-direction: column; align-items: flex-start; }
@@ -623,8 +644,7 @@ button { cursor: pointer; font-family: inherit; }
   .detail-list-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
-  .prod-grid { grid-template-columns: 1fr; }
-  .shop-grid { grid-template-columns: 1fr; }
+  .prod-grid .prod-card { flex: 0 0 72%; }
   .trust-inner { grid-template-columns: 1fr; }
   .world-pills { gap: 6px; }
   .pill { font-size: 11px; padding: 5px 12px; }
