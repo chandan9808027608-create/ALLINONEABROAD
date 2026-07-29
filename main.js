@@ -13,7 +13,7 @@ function handleImgError(img) {
 
 // Bump alongside IMG_ASSET_VERSION in config.php whenever product images are
 // re-uploaded, to bypass Hostinger's CDN caching a stale (e.g. 404) response.
-const IMG_ASSET_VERSION = 2;
+const IMG_ASSET_VERSION = 4;
 function imgUrl(path) {
   if (!path) return path;
   const sep = path.includes('?') ? '&' : '?';
