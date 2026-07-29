@@ -259,6 +259,26 @@ button { cursor: pointer; font-family: inherit; }
 .prod-img-wrap { position: relative; aspect-ratio: 1; overflow: hidden; background: #f8f8f8; }
 .prod-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
 .prod-card:hover .prod-img-wrap img { transform: scale(1.06); }
+.prod-gallery { position: relative; width: 100%; height: 100%; }
+.prod-gallery img { position: absolute; inset: 0; opacity: 0; transition: opacity 0.35s ease, transform 0.3s; }
+.prod-gallery img.active { opacity: 1; }
+.prod-img-wrap.has-gallery::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px;
+  background: linear-gradient(to top, rgba(0,0,0,0.28), transparent);
+  pointer-events: none;
+}
+.prod-dots {
+  position: absolute; left: 0; right: 0; bottom: 8px; z-index: 2;
+  display: flex; justify-content: center; align-items: center; gap: 4px;
+}
+.prod-dot {
+  box-sizing: content-box; /* so padding grows the tap target instead of shrinking the visible dot to nothing under the site's border-box reset */
+  width: 6px; height: 6px; padding: 6px; border: none; border-radius: 50%;
+  background-color: rgba(255,255,255,0.65); background-clip: content-box;
+  transition: transform 0.2s, background-color 0.2s;
+}
+.prod-dot:hover { background-color: rgba(255,255,255,0.9); }
+.prod-dot.active { background-color: var(--orange); transform: scale(1.3); }
 .prod-badges { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 4px; }
 .badge {
   font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;

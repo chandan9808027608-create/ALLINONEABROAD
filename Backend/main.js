@@ -233,16 +233,51 @@ function toggleWish(id) {
 }
 
 // ─── RENDER PRODUCT CARD ─────────────────────
+function galleryImages(p) {
+  const extra = p.images ? p.images.split('|').map(s => s.trim()).filter(Boolean) : [];
+  return [...new Set([p.img, ...extra].filter(Boolean))];
+}
+
+function prodSetImage(wrap, idx) {
+  wrap.querySelectorAll('.prod-gallery img').forEach((img, i) => img.classList.toggle('active', i === idx));
+  wrap.querySelectorAll('.prod-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function prodGoTo(dot, idx) {
+  const wrap = dot.closest('.prod-img-wrap');
+  const t = prodHoverTimers.get(wrap);
+  if (t) { clearInterval(t); prodHoverTimers.delete(wrap); } // manual selection takes over from auto-cycle
+  prodSetImage(wrap, idx);
+}
+
+const prodHoverTimers = new WeakMap();
+const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+function prodHoverStart(wrap) {
+  if (!canHover) return;
+  const imgs = wrap.querySelectorAll('.prod-gallery img');
+  if (imgs.length < 2) return;
+  let i = 0;
+  prodHoverTimers.set(wrap, setInterval(() => { i = (i + 1) % imgs.length; prodSetImage(wrap, i); }, 950));
+}
+function prodHoverStop(wrap) {
+  const t = prodHoverTimers.get(wrap);
+  if (t) { clearInterval(t); prodHoverTimers.delete(wrap); }
+  prodSetImage(wrap, 0);
+}
+
 function renderProductCard(p) {
   const inWish = wishlist.includes(p.id);
   const off = p.orig && p.orig > p.price ? Math.round((p.orig - p.price) / p.orig * 100) : 0;
   const outOfStock = (p.stock ?? 0) <= 0;
   const stars = p.stars ?? 5;
+  const gallery = galleryImages(p);
+  const hasGallery = gallery.length > 1;
   return `
   <div class="prod-card">
-    <div class="prod-img-wrap">
+    <div class="prod-img-wrap${hasGallery ? ' has-gallery' : ''}" onmouseenter="prodHoverStart(this)" onmouseleave="prodHoverStop(this)">
       <a href="product.php?id=${p.id}">
-        <img src="${imgUrl(p.img)}" alt="${p.name}" loading="lazy" onerror="handleImgError(this)"/>
+        <div class="prod-gallery">
+          ${gallery.map((src, i) => `<img src="${imgUrl(src)}" alt="${p.name}" loading="lazy" class="${i === 0 ? 'active' : ''}" onerror="handleImgError(this)"/>`).join('')}
+        </div>
       </a>
       <div class="prod-badges">
         ${off > 0 ? `<span class="badge badge-off">${off}% OFF</span>` : ''}
@@ -250,6 +285,7 @@ function renderProductCard(p) {
         ${outOfStock ? `<span class="badge" style="background:#6b7280;color:#fff;">OUT OF STOCK</span>` : ''}
       </div>
       <button class="wish-btn ${inWish ? 'active' : ''}" data-wish="${p.id}" onclick="toggleWish(${p.id})" title="Wishlist">${inWish ? '♥' : '♡'}</button>
+      ${hasGallery ? `<div class="prod-dots">${gallery.map((_, i) => `<button type="button" class="prod-dot${i === 0 ? ' active' : ''}" onmouseenter="prodGoTo(this,${i})" onclick="prodGoTo(this,${i})" aria-label="Show photo ${i + 1}"></button>`).join('')}</div>` : ''}
     </div>
     <div class="prod-body">
       <div class="prod-cat">${p.cat.toUpperCase()}${p.pieceType === 'set' ? ' · <span class="type-tag type-tag-set">FULL SET</span>' : p.pieceType === 'single' ? ' · <span class="type-tag type-tag-single">SINGLE PIECE</span>' : ''}</div>

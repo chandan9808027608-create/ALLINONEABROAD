@@ -69,7 +69,7 @@ try {
     }
 
     if ($action === 'products') {
-        $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, description, badge, rating, reviews, piece_type FROM products ORDER BY id ASC');
+        $result = $conn->query('SELECT id, name, category, price, original_price, stock, image, images, description, badge, rating, reviews, piece_type FROM products ORDER BY id ASC');
         $products = [];
         while ($row = $result->fetch_assoc()) {
             $products[] = [
@@ -79,6 +79,7 @@ try {
                 'price' => (float)$row['price'],
                 'orig' => $row['original_price'] !== null ? (float)$row['original_price'] : null,
                 'img' => $row['image'],
+                'images' => $row['images'],
                 'sub' => $row['description'],
                 'badge' => $row['badge'],
                 'stock' => (int)$row['stock'],
