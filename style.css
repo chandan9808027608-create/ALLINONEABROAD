@@ -517,6 +517,8 @@ button { cursor: pointer; font-family: inherit; }
 .pdp-breadcrumb-current { color: var(--dark); font-weight: 600; }
 
 .pdp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1200px; margin: 16px auto 40px; padding: 0 32px; align-items: start; }
+.pdp-left-col { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.pdp-left-col .pdp-tabs-wrap { max-width: none; margin: 0; padding: 0; }
 .pdp-gallery-wrap { display: flex; gap: 14px; }
 .pdp-thumbs { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
 .pdp-thumb { width: 68px; height: 68px; border-radius: 10px; cursor: pointer; border: 1.5px solid var(--border); overflow: hidden; background: #fff; transition: border-color 0.15s, box-shadow 0.15s; }

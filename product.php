@@ -133,19 +133,43 @@ if ($product) {
   </div>
 
   <div class="pdp-layout">
-    <div class="pdp-gallery-wrap">
-      <?php if (count($galleryImages) > 1): ?>
-      <div class="pdp-thumbs">
-        <?php foreach ($galleryImages as $i => $img): ?>
-          <div class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)">
-            <img src="<?= htmlspecialchars(imgUrl($img)) ?>" alt="" onerror="handleImgError(this)"/>
-          </div>
-        <?php endforeach; ?>
+    <div class="pdp-left-col">
+      <div class="pdp-gallery-wrap">
+        <?php if (count($galleryImages) > 1): ?>
+        <div class="pdp-thumbs">
+          <?php foreach ($galleryImages as $i => $img): ?>
+            <div class="pdp-thumb<?= $i === 0 ? ' active' : '' ?>" onclick="pdpSetImage(this)">
+              <img src="<?= htmlspecialchars(imgUrl($img)) ?>" alt="" onerror="handleImgError(this)"/>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        <div class="pdp-gallery">
+          <?php if ($off > 0): ?><span class="pdp-gallery-badge">-<?= (int)$off ?>% OFF</span><?php endif; ?>
+          <img src="<?= htmlspecialchars(imgUrl($product['image'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
+        </div>
       </div>
-      <?php endif; ?>
-      <div class="pdp-gallery">
-        <?php if ($off > 0): ?><span class="pdp-gallery-badge">-<?= (int)$off ?>% OFF</span><?php endif; ?>
-        <img src="<?= htmlspecialchars(imgUrl($product['image'])) ?>" alt="<?= htmlspecialchars($product['name']) ?>" id="pdpMainImage" onerror="handleImgError(this)"/>
+      <div class="pdp-tabs-wrap">
+        <div class="pdp-tabs">
+          <?php if ($features): ?><button type="button" class="pdp-tab-btn active" data-tab="features" onclick="pdpSwitchTab(this)">Key Features</button><?php endif; ?>
+          <button type="button" class="pdp-tab-btn<?= $features ? '' : ' active' ?>" data-tab="specs" onclick="pdpSwitchTab(this)">Specifications</button>
+        </div>
+        <?php if ($features): ?>
+        <div class="pdp-tab-panel active" data-panel="features">
+          <ul class="detail-list">
+            <?php foreach ($features as $feature): ?>
+              <li><span class="detail-check">✓</span><?= htmlspecialchars($feature) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+        <?php endif; ?>
+        <div class="pdp-tab-panel<?= $features ? '' : ' active' ?>" data-panel="specs">
+          <table class="spec-table">
+            <?php foreach ($specs as $label => $value): ?>
+              <tr><td><?= htmlspecialchars($label) ?></td><td><?= htmlspecialchars($value) ?></td></tr>
+            <?php endforeach; ?>
+          </table>
+        </div>
       </div>
     </div>
     <div class="pdp-info">
@@ -239,31 +263,6 @@ if ($product) {
           <button class="btn-outline" id="shareNativeBtn" style="display:none;" onclick="shareNative()">📤 Share to Instagram &amp; more</button>
           <button class="btn-outline" onclick="copyProductLink()">🔗 Copy Link</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" style="padding-top:0;">
-    <div class="pdp-tabs-wrap">
-      <div class="pdp-tabs">
-        <?php if ($features): ?><button type="button" class="pdp-tab-btn active" data-tab="features" onclick="pdpSwitchTab(this)">Key Features</button><?php endif; ?>
-        <button type="button" class="pdp-tab-btn<?= $features ? '' : ' active' ?>" data-tab="specs" onclick="pdpSwitchTab(this)">Specifications</button>
-      </div>
-      <?php if ($features): ?>
-      <div class="pdp-tab-panel active" data-panel="features">
-        <ul class="detail-list detail-list-grid">
-          <?php foreach ($features as $feature): ?>
-            <li><span class="detail-check">✓</span><?= htmlspecialchars($feature) ?></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-      <?php endif; ?>
-      <div class="pdp-tab-panel<?= $features ? '' : ' active' ?>" data-panel="specs">
-        <table class="spec-table">
-          <?php foreach ($specs as $label => $value): ?>
-            <tr><td><?= htmlspecialchars($label) ?></td><td><?= htmlspecialchars($value) ?></td></tr>
-          <?php endforeach; ?>
-        </table>
       </div>
     </div>
   </div>
