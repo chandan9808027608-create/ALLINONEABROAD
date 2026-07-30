@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=1"/>
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=1"/>
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1"/>
-  <link rel="stylesheet" href="style.css?v=20"/>
+  <link rel="stylesheet" href="style.css?v=21"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 </head>
@@ -70,29 +70,31 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-slider" id="heroSlider">
-    <div class="hero-slides" id="heroSlides">
-      <div class="hero-slide">
-        <div class="hero-overlay"></div>
-        <div class="hero-inner">
-          <div class="hero-left">
-            <h1 class="hero-title">Going abroad? We<br>pack it <em>all</em> for you.</h1>
-            <p class="hero-sub">Trolley bags &amp; cooking essentials —<br>everything you need before flying out.</p>
-            <a href="shop.html" class="btn-orange">SHOP NOW</a>
-          </div>
-        </div>
-      </div>
-      <div class="hero-slide hero-slide-img">
-        <img src="images/Heroimg1.jpg?v=2" alt="Luggage set packed and ready by the front door"/>
-      </div>
-      <div class="hero-slide hero-slide-img">
-        <img src="images/Heroimg2.jpg?v=1" alt="Luggage set at the airport departure lounge"/>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <span class="hero-eyebrow">✈️ Moving abroad?</span>
+      <h1 class="hero-title">Everything you need,<br>packed in <em>one store</em>.</h1>
+      <p class="hero-sub">Luggage, kitchen essentials &amp; home appliances — everything students and professionals need before flying out.</p>
+      <a href="shop.html" class="btn-orange">SHOP ALL PRODUCTS</a>
+      <div class="hero-cats">
+        <a href="shop.html?cat=luggage" class="hero-cat-pill">🧳 Luggage &amp; Bags</a>
+        <a href="shop.html?cat=kitchen" class="hero-cat-pill">🍳 Kitchen Essentials</a>
+        <a href="shop.html?cat=appliances" class="hero-cat-pill">🔌 Home Appliances</a>
       </div>
     </div>
-    <div class="hero-slider-dots" id="heroDots">
-      <span class="dot active" onclick="setHeroSlide(0)"></span>
-      <span class="dot" onclick="setHeroSlide(1)"></span>
-      <span class="dot" onclick="setHeroSlide(2)"></span>
+    <div class="hero-visual">
+      <div class="hero-visual-tile hero-visual-main">
+        <img src="images/luggage-hero.avif?v=1" alt="Packed suitcase ready for travel" onerror="handleImgError(this)"/>
+        <span class="hero-visual-tag">Luggage</span>
+      </div>
+      <div class="hero-visual-tile hero-visual-side1">
+        <img src="images/kitchen-hero.avif?v=1" alt="Kitchen essentials" onerror="handleImgError(this)"/>
+        <span class="hero-visual-tag">Kitchen</span>
+      </div>
+      <div class="hero-visual-tile hero-visual-side2">
+        <img src="images/home-hero.jpg?v=1" alt="Home appliances" onerror="handleImgError(this)"/>
+        <span class="hero-visual-tag">Appliances</span>
+      </div>
     </div>
   </div>
 </section>
@@ -324,6 +326,6 @@
 <!-- BACK TO TOP -->
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script src="main.js?v=12"></script>
+<script src="main.js?v=13"></script>
 </body>
 </html>
