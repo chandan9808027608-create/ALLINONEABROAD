@@ -26,9 +26,9 @@ button { cursor: pointer; font-family: inherit; }
 .announce-bar {
   background: #0f172a;
   color: rgba(255,255,255,0.85);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  padding: 8px 0;
+  padding: 7px 0;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -36,8 +36,8 @@ button { cursor: pointer; font-family: inherit; }
   display: inline-block;
   animation: marquee 30s linear infinite;
 }
-.announce-track span { padding: 0 36px; }
-.announce-track span:not(:last-child)::after { content: " •"; margin-left: 36px; opacity: 0.4; }
+.announce-track span { padding: 0 28px; }
+.announce-track span:not(:last-child)::after { content: " •"; margin-left: 28px; opacity: 0.4; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* HERO */
@@ -73,13 +73,6 @@ button { cursor: pointer; font-family: inherit; }
 }
 .hero-title em { color: var(--orange); font-style: normal; }
 .hero-sub { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.7; margin-bottom: 28px; }
-.hero-cats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-.hero-cat-pill {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #fff;
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
-  padding: 8px 14px; border-radius: 100px; transition: background 0.15s, transform 0.15s;
-}
-.hero-cat-pill:hover { background: rgba(255,255,255,0.16); transform: translateY(-1px); }
 
 .hero-visual {
   display: grid; gap: 14px; height: 420px;
@@ -335,22 +328,6 @@ button { cursor: pointer; font-family: inherit; }
 }
 .deal-img-wrap img { width: 100%; border-radius: 12px; object-fit: cover; }
 
-/* COMBO */
-.combo-section { background: var(--light); padding: 48px 32px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.combo-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
-}
-.combo-title { font-size: 24px; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
-.combo-sub { font-size: 14px; color: var(--gray); max-width: 400px; }
-.combo-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
-.combo-code {
-  font-family: monospace; font-size: 18px; font-weight: 800; letter-spacing: 0.1em;
-  color: var(--orange); border: 2px dashed var(--orange);
-  padding: 10px 22px; border-radius: 8px;
-  background: rgba(249,115,22,0.06);
-}
-
 /* WORLD */
 .world-section { padding: 56px 32px; }
 .world-pills {
@@ -591,6 +568,9 @@ button { cursor: pointer; font-family: inherit; }
   .hero-visual { height: 340px; }
 }
 @media (max-width: 768px) {
+  .announce-bar { font-size: 10px; padding: 6px 0; }
+  .announce-track span { padding: 0 18px; }
+  .announce-track span:not(:last-child)::after { margin-left: 18px; }
   .hero-inner { grid-template-columns: 1fr; padding: 40px 20px 28px; gap: 24px; }
   .hero-left { max-width: none; }
   .hero-visual {
@@ -627,9 +607,6 @@ button { cursor: pointer; font-family: inherit; }
 
   .deal-inner { grid-template-columns: 1fr; }
   .deal-img-wrap { order: -1; }
-  .combo-inner { flex-direction: column; align-items: flex-start; }
-  .combo-right { width: 100%; }
-  .combo-right .btn-orange { flex: 1; }
   .why-grid { grid-template-columns: 1fr; }
   .why-section { padding: 48px 20px; }
   .world-section { padding: 40px 20px; }
@@ -652,7 +629,7 @@ button { cursor: pointer; font-family: inherit; }
   .btn-signin { display: none; }
 
   .section { padding: 48px 20px; }
-  .deal-section, .combo-section, .shop-hero { padding-left: 20px; padding-right: 20px; }
+  .deal-section, .shop-hero { padding-left: 20px; padding-right: 20px; }
   .shop-layout { grid-template-columns: 1fr; padding: 24px 20px; }
   .shop-sidebar { display: none; }
   .pdp-layout { grid-template-columns: 1fr; padding: 0 20px; }
@@ -665,9 +642,11 @@ button { cursor: pointer; font-family: inherit; }
 }
 @media (max-width: 480px) {
   .prod-grid .prod-card { flex: 0 0 72%; }
-  .trust-inner { grid-template-columns: 1fr; }
+  .trust-inner { grid-template-columns: repeat(2, 1fr); gap: 12px 10px; }
+  .trust-item { gap: 8px; }
+  .trust-icon { width: 28px; height: 28px; }
+  .trust-title { font-size: 11.5px; }
+  .trust-sub { font-size: 10px; }
   .world-pills { gap: 6px; }
   .pill { font-size: 11px; padding: 5px 12px; }
-  .combo-right { flex-direction: column; align-items: stretch; gap: 10px; }
-  .combo-code { text-align: center; }
 }
