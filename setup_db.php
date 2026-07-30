@@ -80,7 +80,7 @@ try {
         $conn->query("
             INSERT INTO banner_messages (message, sort_order) VALUES
             ('🎉 Grand Opening — Up to 50% Off', 1),
-            ('🚚 Free Delivery on Orders Above Rs. 799', 2),
+            ('🚚 Delivery at Rs. 100 within Kathmandu', 2),
             ('💳 eSewa • Khalti • FonePay • COD', 3)
         ");
     }

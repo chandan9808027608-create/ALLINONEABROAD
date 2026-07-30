@@ -53,7 +53,7 @@ if ($product) {
 </head>
 <body>
 
-<div class="announce-bar"><div class="announce-track"><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Free Delivery on Orders Above Rs. 799</span><span>💳 eSewa • Khalti • FonePay • COD</span><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Free Delivery on Orders Above Rs. 799</span><span>💳 eSewa • Khalti • FonePay • COD</span></div></div>
+<div class="announce-bar"><div class="announce-track"><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Delivery at Rs. 100 within Kathmandu</span><span>💳 eSewa • Khalti • FonePay • COD</span><span>🎉 Grand Opening — Up to 50% Off</span><span>🚚 Delivery at Rs. 100 within Kathmandu</span><span>💳 eSewa • Khalti • FonePay • COD</span></div></div>
 
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
@@ -251,9 +251,9 @@ if ($product) {
       <div class="pdp-shipping-box">
         <div style="font-weight:800;font-size:14px;margin-bottom:10px;">Shipping</div>
         <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--gray);margin-bottom:8px;">
-          <span>🕐 Estimated Delivery: 3–5 days</span><span>Rs. 0</span>
+          <span>🕐 Estimated Delivery: 3–5 days</span><span>Rs. 100</span>
         </div>
-        <div class="cart-note" style="margin:0;">🎉 Free delivery on orders above Rs. 799</div>
+        <div class="cart-note" style="margin:0;">🚚 Delivery: Rs. 100 within Kathmandu</div>
       </div>
 
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
@@ -376,7 +376,7 @@ if ($product) {
 <aside class="cart-drawer" id="cartDrawer">
   <div class="drawer-head"><h3>Shopping Cart <span id="cartLabel" class="cart-label">0</span></h3><button class="drawer-close" onclick="toggleCart()">×</button></div>
   <div class="drawer-body" id="cartBody"><div class="empty-state" id="cartEmpty"><div class="empty-icon">🛒</div><p>Your cart is empty</p></div><div id="cartItemsList"></div></div>
-  <div class="drawer-footer" id="cartFooter" style="display:none;"><div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div><div class="cart-note">🎉 Free delivery on this order!</div><a href="checkout.html" class="btn-orange btn-full">Proceed to Checkout →</a><button class="btn-outline btn-full" onclick="toggleCart()" style="margin-top:10px;">Continue Shopping</button></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;"><div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div><div class="cart-note">🚚 Delivery: Rs. 100 within Kathmandu</div><a href="checkout.html" class="btn-orange btn-full">Proceed to Checkout →</a><button class="btn-outline btn-full" onclick="toggleCart()" style="margin-top:10px;">Continue Shopping</button></div>
 </aside>
 <div class="toast" id="toast"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
