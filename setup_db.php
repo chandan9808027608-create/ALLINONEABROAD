@@ -113,6 +113,74 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ");
 
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS finance_customers (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            phone VARCHAR(20) NULL,
+            address VARCHAR(255) NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS finance_bank_accounts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS finance_expense_categories (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS finance_ledger_entries (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            customer_id INT NOT NULL,
+            entry_type ENUM('debit','credit') NOT NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            note VARCHAR(255) NULL,
+            bank_account_id INT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            KEY idx_customer (customer_id),
+            CONSTRAINT fk_ledger_customer FOREIGN KEY (customer_id) REFERENCES finance_customers(id) ON DELETE CASCADE,
+            CONSTRAINT fk_ledger_bank FOREIGN KEY (bank_account_id) REFERENCES finance_bank_accounts(id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    $conn->query("
+        CREATE TABLE IF NOT EXISTS finance_transactions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            type ENUM('sale','purchase','expense') NOT NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            note VARCHAR(255) NULL,
+            party_name VARCHAR(150) NULL,
+            bill_no VARCHAR(50) NULL,
+            bill_date DATE NULL,
+            party_address VARCHAR(255) NULL,
+            vat_pan_no VARCHAR(50) NULL,
+            items JSON NULL,
+            discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+            vat_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+            expense_category_id INT NULL,
+            payment_mode ENUM('cash','bank') NOT NULL DEFAULT 'cash',
+            bank_account_id INT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            KEY idx_type (type),
+            CONSTRAINT fk_tx_category FOREIGN KEY (expense_category_id) REFERENCES finance_expense_categories(id) ON DELETE SET NULL,
+            CONSTRAINT fk_tx_bank FOREIGN KEY (bank_account_id) REFERENCES finance_bank_accounts(id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
     echo 'Database setup completed successfully.';
 } catch (Throwable $e) {
     http_response_code(500);
