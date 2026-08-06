@@ -388,6 +388,8 @@ button { cursor: pointer; font-family: inherit; }
   color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 600;
   padding: 5px 11px; border-radius: 6px;
 }
+.admin-badge { text-decoration: none; transition: background 0.15s, color 0.15s; }
+.admin-badge:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.9); }
 
 /* CART DRAWER */
 .drawer-overlay {

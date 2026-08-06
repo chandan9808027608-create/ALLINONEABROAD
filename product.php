@@ -368,7 +368,7 @@ if ($product) {
       <div class="footer-col"><h4>LEGAL</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
       <div class="footer-col"><h4>CONTACT</h4><ul><li style="color:rgba(255,255,255,0.6);">+977 9809497026</li><li style="color:rgba(255,255,255,0.6);">luvkushgupta37@gmail.com</li><li style="color:rgba(255,255,255,0.6);">Jorpati Chamunda Gate (Opp. Prabhu Bank), Kathmandu</li></ul></div>
     </div>
-    <div class="footer-bottom"><p class="footer-copy">© 2026 All In One Abroad. All rights reserved.</p><div class="payment-icons"><span class="pay-badge">eSewa</span><span class="pay-badge">Khalti</span><span class="pay-badge">FonePay</span><span class="pay-badge">COD</span></div></div>
+    <div class="footer-bottom"><p class="footer-copy">© 2026 All In One Abroad. All rights reserved.</p><div class="payment-icons"><span class="pay-badge">eSewa</span><span class="pay-badge">Khalti</span><span class="pay-badge">FonePay</span><span class="pay-badge">COD</span><a href="orders.php" class="pay-badge admin-badge">Admin Login</a></div></div>
   </div>
 </footer>
 
