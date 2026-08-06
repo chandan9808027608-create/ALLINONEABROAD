@@ -236,6 +236,21 @@ if ($result) {
     .nav-link.active { background: #111827; color: #fff; border-color: #111827; }
     .logout-link { margin-left: auto; }
 
+    .topbar-links { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+    .menu-btn { display: none; flex: none; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 8px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 17px; color: #374151; cursor: pointer; }
+
+    .sidebar-backdrop { position: fixed; inset: 0; background: rgba(17,24,39,0.45); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 40; }
+    .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; max-width: 82vw; background: #fff; z-index: 50; transform: translateX(-100%); transition: transform 0.25s ease; overflow-y: auto; box-shadow: 6px 0 24px rgba(0,0,0,0.15); display: flex; flex-direction: column; padding-bottom: 12px; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-head { display: flex; align-items: center; justify-content: space-between; padding: 18px; border-bottom: 1px solid #e5e7eb; margin-bottom: 6px; }
+    .sidebar-close { background: none; border: none; font-size: 22px; line-height: 1; color: #6b7280; cursor: pointer; padding: 4px; }
+    .sidebar-section-label { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #9ca3af; padding: 14px 18px 6px; }
+    .sidebar-link { display: block; padding: 11px 18px; font-size: 14px; font-weight: 600; color: #374151; text-decoration: none; }
+    .sidebar-link:hover { background: #f3f4f6; }
+    .sidebar-link.active { background: #111827; color: #fff; }
+    .sidebar-link.logout { margin-top: auto; color: #dc2626; border-top: 1px solid #f3f4f6; padding-top: 14px; }
+
     .wrap { max-width: 1100px; margin: 0 auto; padding: 28px; }
 
     .panel { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
@@ -296,20 +311,54 @@ if ($result) {
 
     @media (max-width: 640px) {
       .wrap { padding: 16px; }
+      .menu-btn { display: flex; }
+      .topbar-links { display: none; }
+      .topbar { padding: 14px 16px; gap: 12px; }
     }
   </style>
 </head>
 <body>
 
   <div class="topbar">
+    <button type="button" class="menu-btn" id="navMenuBtn" aria-label="Open menu">☰</button>
     <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
     <div class="topbar-title">Admin</div>
-    <a href="orders.php" class="nav-link">Orders</a>
-    <a href="products.php" class="nav-link active">Products</a>
-    <a href="banner.php" class="nav-link">Banner</a>
-    <a href="finance.php" class="nav-link">Finance</a>
-    <a href="orders.php?logout=1" class="nav-link logout-link">Log out</a>
+    <nav class="topbar-links">
+      <a href="orders.php" class="nav-link">Orders</a>
+      <a href="products.php" class="nav-link active">Products</a>
+      <a href="banner.php" class="nav-link">Banner</a>
+      <a href="finance.php" class="nav-link">Finance</a>
+      <a href="orders.php?logout=1" class="nav-link logout-link">Log out</a>
+    </nav>
   </div>
+
+  <div class="sidebar-backdrop" id="navBackdrop"></div>
+  <aside class="sidebar" id="navSidebar">
+    <div class="sidebar-head">
+      <div class="logo"><span class="logo-top">ALL IN ONE</span><span class="logo-bottom">ABROAD</span></div>
+      <button type="button" class="sidebar-close" id="navSidebarClose" aria-label="Close menu">×</button>
+    </div>
+    <div class="sidebar-section-label">Admin</div>
+    <a href="orders.php" class="sidebar-link">Orders</a>
+    <a href="products.php" class="sidebar-link active">Products</a>
+    <a href="banner.php" class="sidebar-link">Banner</a>
+    <a href="finance.php" class="sidebar-link">Finance</a>
+    <a href="orders.php?logout=1" class="sidebar-link logout">Log out</a>
+  </aside>
+  <script>
+    (function () {
+      var btn = document.getElementById('navMenuBtn');
+      var sidebar = document.getElementById('navSidebar');
+      var backdrop = document.getElementById('navBackdrop');
+      var closeBtn = document.getElementById('navSidebarClose');
+      if (!btn || !sidebar || !backdrop) return;
+      function openNav() { sidebar.classList.add('open'); backdrop.classList.add('open'); }
+      function closeNav() { sidebar.classList.remove('open'); backdrop.classList.remove('open'); }
+      btn.addEventListener('click', openNav);
+      backdrop.addEventListener('click', closeNav);
+      if (closeBtn) closeBtn.addEventListener('click', closeNav);
+    })();
+  </script>
 
   <div class="wrap">
 
