@@ -50,6 +50,8 @@ if (isset($_POST['password'])) {
     if (hash_equals($adminPassword, (string)$_POST['password'])) {
         session_regenerate_id(true);
         $_SESSION['orders_admin'] = true;
+        header('Location: orders.php');
+        exit;
     } else {
         renderLoginForm('Incorrect password.');
         exit;
